@@ -1,8 +1,9 @@
 pipeline {
     agent any
-
-        stages {
-
+    tools{
+        maven 'Maven Apache'
+    }
+    stages {
          stage('Checkout') {
                 steps {
                     // Checkout the code and Get some code from a GitHub repository
