@@ -10,7 +10,8 @@ pipeline {
             steps {
                  echo 'Checkout the JAR! XM'
                 // Replace with your repository URL and credentials if needed
-               git url: 'https://github.com/SraBrown/test_pipeline.git'
+              // git url: 'https://github.com/SraBrown/test_pipeline.git'
+                checkout scm
             }
         }
 
