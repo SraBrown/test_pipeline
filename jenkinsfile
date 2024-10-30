@@ -15,12 +15,6 @@ pipeline {
 
         stage('Build') {
             steps {
-                script {
-                    // Check if Maven is installed and available
-                    if (!sh(script: 'mvn -v', returnStatus: true)) {
-                        error 'Maven is not installed.'
-                    }
-                }
                 // Compile the JAR using Maven
                 sh 'mvn clean package'
             }
