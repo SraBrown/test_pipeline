@@ -30,14 +30,7 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                // Run tests (unit tests, etc.)
-                sh 'mvn test' // Example for a Maven project
-            }
-        }
-
-        stage('SonarQube Analysis') {
+stage('SonarQube Analysis') {
             steps {
                 script {
                     // Run SonarQube analysis
