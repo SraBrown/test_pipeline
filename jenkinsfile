@@ -4,7 +4,14 @@ pipeline {
     tools {
         maven 'Maven Apache'
     }
-
+    
+    environment {
+        SONARQUBE_SERVER = 'SonarQube' // Name of the SonarQube server in Jenkins
+        SONAR_PROJECT_KEY = 'your-project-key'
+        SONAR_PROJECT_NAME = 'Your Project Name'
+        SONAR_PROJECT_VERSION = '1.0'
+    }
+    
     stages {
         stage('Checkout') {
             steps {
@@ -20,6 +27,36 @@ pipeline {
                 echo 'Inicia Build'
                 // Compile the JAR using Maven
                 sh 'mvn clean package'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Run tests (unit tests, etc.)
+                sh 'mvn test' // Example for a Maven project
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // Run SonarQube analysis
+                    def scannerHome = tool 'SonarQube Scanner' // Tool name configured in Jenkins
+                    withSonarQubeEnv(SONARQUBE_SERVER) {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.projectName=${SONAR_PROJECT_NAME} -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} -Dsonar.sources=src -Dsonar.host.url=http://your-sonarqube-server -Dsonar.login=your-token"
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                script {
+                    // Wait for SonarQube analysis to finish and check quality gate status
+                    timeout(time: 5, unit: 'MINUTES') {
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
             }
         }
 
