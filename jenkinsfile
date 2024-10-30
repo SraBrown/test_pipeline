@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                 echo 'Compile the JAR! XM'
+                 echo 'Checkout the JAR! XM'
                 // Replace with your repository URL and credentials if needed
                git url: 'https://github.com/SraBrown/test_pipeline.git'
             }
@@ -16,7 +16,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo 'Compile the JAR! XM'
+                echo 'Inicia Build'
                 // Compile the JAR using Maven
                 sh 'mvn clean package'
             }
