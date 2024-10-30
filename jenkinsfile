@@ -15,6 +15,7 @@ pipeline {
 
         stage('Build') {
             steps {
+                echo 'Compile the JAR!'
                 // Compile the JAR using Maven
                 sh 'mvn clean package'
             }
