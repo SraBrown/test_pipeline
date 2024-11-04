@@ -69,5 +69,4 @@ stage('SonarQube Analysis') {
                         archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
                     }
         }
-    }
-}
+    
