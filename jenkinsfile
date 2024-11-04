@@ -4,10 +4,10 @@ pipeline {
     tools {
         maven 'Maven Apache'
     }
-
+/*
 parameters {
         string(name: 'CODE', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-    }
+    }*/
 
  if (params.EJECUTE_JAR) {
         echo 'something'
