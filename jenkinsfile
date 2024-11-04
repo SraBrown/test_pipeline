@@ -4,11 +4,16 @@ pipeline {
     tools {
         maven 'Maven Apache'
     }
-/*
-parameters {
-        string(name: 'CODE', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-    }*/
 
+    /*
+        parameters {
+            
+            string(name: 'CODE', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+            echo 'parameters'    
+        
+        }
+    */
+   
 
 /*
     environment {
@@ -27,9 +32,9 @@ parameters {
                 checkout scm
             }
 
-         if (params.EJECUTE_JAR) {
-                echo 'something'
-            }
+            if (params.EJECUTE_JAR) {
+               echo 'something'
+    }
         }
 
         stage('Build') {
@@ -39,29 +44,29 @@ parameters {
                 sh 'mvn clean package'
             }
         }
-    /*
-    stage('SonarQube Analysis') {
-                steps {
-                    script {
-                        // Run SonarQube analysis
-                        def scannerHome = tool 'SonarQube Scanner' // Tool name configured in Jenkins
-                        withSonarQubeEnv(SONARQUBE_SERVER) {
-                            sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.projectName=${SONAR_PROJECT_NAME} -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} -Dsonar.sources=src -Dsonar.host.url=http://your-sonarqube-server -Dsonar.login=your-token"
-                        }
+/*
+stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // Run SonarQube analysis
+                    def scannerHome = tool 'SonarQube Scanner' // Tool name configured in Jenkins
+                    withSonarQubeEnv(SONARQUBE_SERVER) {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.projectName=${SONAR_PROJECT_NAME} -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} -Dsonar.sources=src -Dsonar.host.url=http://your-sonarqube-server -Dsonar.login=your-token"
                     }
                 }
             }
-    
-            stage('Quality Gate') {
-                steps {
-                    script {
-                        // Wait for SonarQube analysis to finish and check quality gate status
-                        timeout(time: 5, unit: 'MINUTES') {
-                            waitForQualityGate abortPipeline: true
-                        }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                script {
+                    // Wait for SonarQube analysis to finish and check quality gate status
+                    timeout(time: 5, unit: 'MINUTES') {
+                        waitForQualityGate abortPipeline: true
                     }
                 }
-            }*/
+            }
+        }*/
 
         stage('Archive') {
                     steps {
@@ -70,14 +75,3 @@ parameters {
                     }
         }
     }
-
-    post {
-        success {
-            echo 'Pipeline was successful!'
-        }
-        failure {
-            echo 'Pipeline failed.'
-        }
-    }
-}
-
