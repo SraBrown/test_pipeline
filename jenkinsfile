@@ -10,6 +10,7 @@ pipeline {
         booleanParam(name: 'EJECUTE_JAR', defaultValue: true, description: 'Enable greeting')
         string(name: 'LANGUAGE', defaultValue: 'World', description: 'Enter your name')
         choice(name: 'IF_JAR', choices: ['Yes', 'No'], description: 'Run SonarQube analysis?')
+         choice(name: 'IF_PRUEBA_AGREGA', choices: ['Yes', 'No'], description: 'Run SonarQube analysis?')
     }
 
     /* environment {
