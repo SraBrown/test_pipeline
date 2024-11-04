@@ -6,12 +6,12 @@ pipeline {
     }
 
     parameters {
-        choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
+        //choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
         booleanParam(name: 'EJECUTE_JAR', defaultValue: true, description: 'Enable greeting')
+        string(name: 'LANGUAGE', defaultValue: 'World', description: 'Enter your name')
     }
 
-/*
-    environment {
+    /* environment {
         SONARQUBE_SERVER = 'SonarQube' // Name of the SonarQube server in Jenkins
         SONAR_PROJECT_KEY = 'your-project-key'
         SONAR_PROJECT_NAME = 'Your Project Name'
@@ -27,41 +27,41 @@ pipeline {
                 checkout scm
             }
 
-          //      if (params.EJECUTE_JAR) {
-            //       echo 'something'
-              //  }
-        
+               /* if (params.EJECUTE_JAR) {
+                   echo 'something'
+                }*/
+        }
 
         stage('Build') {
             steps {
-                 //echo 'Building for environment: ${params.ENVIRONMENT}'
+                // echo "Building for environment: ${params.LANGUAGE}"
                 // Compile the JAR using Maven
                 sh 'mvn clean package'
             }
         }
-/*
-stage('SonarQube Analysis') {
-            steps {
-                script {
-                    // Run SonarQube analysis
-                    def scannerHome = tool 'SonarQube Scanner' // Tool name configured in Jenkins
-                    withSonarQubeEnv(SONARQUBE_SERVER) {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.projectName=${SONAR_PROJECT_NAME} -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} -Dsonar.sources=src -Dsonar.host.url=http://your-sonarqube-server -Dsonar.login=your-token"
+        /*
+        stage('SonarQube Analysis') {
+                    steps {
+                        script {
+                            // Run SonarQube analysis
+                            def scannerHome = tool 'SonarQube Scanner' // Tool name configured in Jenkins
+                            withSonarQubeEnv(SONARQUBE_SERVER) {
+                                sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.projectName=${SONAR_PROJECT_NAME} -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} -Dsonar.sources=src -Dsonar.host.url=http://your-sonarqube-server -Dsonar.login=your-token"
+                            }
+                        }
                     }
                 }
-            }
-        }
 
-        stage('Quality Gate') {
-            steps {
-                script {
-                    // Wait for SonarQube analysis to finish and check quality gate status
-                    timeout(time: 5, unit: 'MINUTES') {
-                        waitForQualityGate abortPipeline: true
+                stage('Quality Gate') {
+                    steps {
+                        script {
+                            // Wait for SonarQube analysis to finish and check quality gate status
+                            timeout(time: 5, unit: 'MINUTES') {
+                                waitForQualityGate abortPipeline: true
+                            }
+                        }
                     }
-                }
-            }
-        }*/
+                }*/
 
         stage('Archive') {
                     steps {
@@ -69,4 +69,5 @@ stage('SonarQube Analysis') {
                         archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
                     }
         }
-    
+    }
+}
