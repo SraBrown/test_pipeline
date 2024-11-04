@@ -5,15 +5,10 @@ pipeline {
         maven 'Maven Apache'
     }
 
-    /*
-        parameters {
-            
-            string(name: 'CODE', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-            echo 'parameters'    
-        
-        }
-    */
-   
+    parameters {
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
+        booleanParam(name: 'EJECUTE_JAR', defaultValue: true, description: 'Enable greeting')
+    }
 
 /*
     environment {
@@ -32,14 +27,14 @@ pipeline {
                 checkout scm
             }
 
-            if (params.EJECUTE_JAR) {
-               echo 'something'
-    }
+                if (params.EJECUTE_JAR) {
+                   echo 'something'
+                }
         }
 
         stage('Build') {
             steps {
-                echo 'Inicia Build'
+                 echo "Building for environment: ${params.ENVIRONMENT}"
                 // Compile the JAR using Maven
                 sh 'mvn clean package'
             }
