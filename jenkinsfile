@@ -27,9 +27,9 @@ pipeline {
                 checkout scm
             }
 
-                if (params.EJECUTE_JAR) {
-                   echo 'something'
-                }
+          //      if (params.EJECUTE_JAR) {
+            //       echo 'something'
+              //  }
         }
 
         stage('Build') {
