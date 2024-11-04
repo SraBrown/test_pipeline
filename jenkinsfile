@@ -32,11 +32,11 @@ pipeline {
         stage('Build') {
             steps {
                    echo "You selected ${params.LANGUAGE}."
-                when {
-                expression { params.IF_JAR == 'Yes' }
-                  // Compile the JAR using Maven
-                sh 'mvn clean package'
-            }
+                    when {
+                    expression { params.IF_JAR == 'Yes' }
+                      // Compile the JAR using Maven
+                    sh 'mvn clean package'
+                }
             }   
               
         }
