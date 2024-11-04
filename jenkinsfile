@@ -9,6 +9,7 @@ pipeline {
         //choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
         booleanParam(name: 'EJECUTE_JAR', defaultValue: true, description: 'Enable greeting')
         string(name: 'LANGUAGE', defaultValue: 'World', description: 'Enter your name')
+        choice(name: 'IF_JAR', choices: ['Yes', 'No'], description: 'Run SonarQube analysis?')
     }
 
     /* environment {
@@ -26,18 +27,18 @@ pipeline {
               // git url: 'https://github.com/SraBrown/test_pipeline.git'
                 checkout scm
             }
-
-               /* if (params.EJECUTE_JAR) {
-                   echo 'something'
-                }*/
         }
 
         stage('Build') {
             steps {
                    echo "You selected ${params.LANGUAGE}."
-                // Compile the JAR using Maven
+                when {
+                expression { params.IF_JAR == 'Yes' }
+                  // Compile the JAR using Maven
                 sh 'mvn clean package'
             }
+            }   
+              
         }
         /*
         stage('SonarQube Analysis') {
