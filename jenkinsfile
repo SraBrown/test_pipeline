@@ -34,7 +34,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                 echo "Building for environment: ${params.ENVIRONMENT}"
+                 echo 'Building for environment: ${params.ENVIRONMENT}'
                 // Compile the JAR using Maven
                 sh 'mvn clean package'
             }
