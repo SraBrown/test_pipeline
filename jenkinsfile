@@ -9,10 +9,6 @@ parameters {
         string(name: 'CODE', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
     }*/
 
- if (params.EJECUTE_JAR) {
-        echo 'something'
-    }
-
 
 /*
     environment {
@@ -29,6 +25,10 @@ parameters {
                 // Replace with your repository URL and credentials if needed
               // git url: 'https://github.com/SraBrown/test_pipeline.git'
                 checkout scm
+            }
+
+         if (params.EJECUTE_JAR) {
+                echo 'something'
             }
         }
 
