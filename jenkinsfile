@@ -29,16 +29,18 @@ pipeline {
             }
         }
 
-        stage('Build') {
+       stage('SonarQube Analysis') {
+            when {
+                expression { params.IF_JAR == 'Yes' }
+            }
             steps {
-                   echo "You selected ${params.LANGUAGE}."
-                    when {
-                    expression { params.IF_JAR == 'Yes' }
-                      // Compile the JAR using Maven
-                    sh 'mvn clean package'
+                script {
+                    echo 'Running SonarQube analysis...'
+                    withSonarQubeEnv('SonarQube Server') { // Replace with your SonarQube server name
+                        // Add your SonarQube analysis command here (e.g., sonar-scanner)
+                    }
                 }
-            }   
-              
+            }
         }
         /*
         stage('SonarQube Analysis') {
