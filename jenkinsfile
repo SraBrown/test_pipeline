@@ -1,4 +1,5 @@
 pipeline {
+pipeline {
     agent any
 
     tools {
@@ -28,7 +29,6 @@ pipeline {
                 checkout scm
             }
         }
-    }
 
        stage('SonarQube Analysis') {
             when {
@@ -53,6 +53,8 @@ pipeline {
                     }
             }
         }
+        }
+        
 
 
         /*
