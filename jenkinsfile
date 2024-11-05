@@ -48,7 +48,7 @@ pipeline {
             steps {
                 script {
                     if (params.EJECUTE_JAR) {
-                        echo "Hello, ${params.LANGUAGE}!"
+                        echo 'Hello, ${params.LANGUAGE}!'
                     
                     }
             }
