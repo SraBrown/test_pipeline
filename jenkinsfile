@@ -12,12 +12,12 @@ pipeline {
         choice(name: 'EJECUTE_SONAR', choices: ['Yes', 'No'], description: 'Ejecute SONAR?')
     }
 
-    /* environment {
+    environment {
         SONARQUBE_SERVER = 'SonarQube' // Name of the SonarQube server in Jenkins
         SONAR_PROJECT_KEY = 'your-project-key'
         SONAR_PROJECT_NAME = 'Your Project Name'
         SONAR_PROJECT_VERSION = '1.0'
-    }*/
+    }
     
     stages {
         stage('Checkout') {
@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running SonarQube analysis...'
-                    withSonarQubeEnv('SonarQube Server') { // Replace with your SonarQube server name
+                    withSonarQubeEnv('SonarQube') { // Replace with your SonarQube server name
                         // Add your SonarQube analysis command here (e.g., sonar-scanner)
                     }
                 }
