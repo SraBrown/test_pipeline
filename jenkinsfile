@@ -6,9 +6,9 @@ pipeline {
     }
 
     parameters {
-        //choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
         booleanParam(name: 'EJECUTE_JAR', defaultValue: true, description: 'Enable greeting')
-        string(name: 'LANGUAGE', defaultValue: 'World', description: 'Enter your name')
+        string(name: 'LANGUAGE', defaultValue: 'JAVA', description: 'Enter your name')
         choice(name: 'IF_JAR', choices: ['Yes', 'No'], description: 'Ejecute Jar?')
     }
 
@@ -42,6 +42,20 @@ pipeline {
                 }
             }
         }
+
+        stage('Greeting') {
+            steps {
+                script {
+                    if (params.LANGUAGE) {
+                        echo "Hello, ${params.LANGUAGE}!"
+                    } else {
+                        echo "Greeting disabled."
+                    }
+                }
+            }
+        }
+
+
         /*
         stage('SonarQube Analysis') {
                     steps {
