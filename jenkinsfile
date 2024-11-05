@@ -48,8 +48,8 @@ pipeline {
                 steps {
                     script {
                         if (params.EJECUTE_JAR) {
-                            echo 'Hello, ${params.LANGUAGE}!'
-                        
+                            echo 'Starting Buil, ${params.LANGUAGE}!'
+                                sh 'mvn clean package'
                         }
                 }
             }
