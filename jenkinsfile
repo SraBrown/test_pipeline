@@ -44,18 +44,6 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                script {
-                    if (params.EJECUTE_JAR) {
-                        echo 'Hello, ${params.LANGUAGE}!'
-                    
-                    }
-            }
-        }
-        }
-        
-
 
         /*
         stage('SonarQube Analysis') {
