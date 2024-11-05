@@ -28,6 +28,7 @@ pipeline {
                 checkout scm
             }
         }
+    }
 
        stage('SonarQube Analysis') {
             when {
