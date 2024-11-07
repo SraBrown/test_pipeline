@@ -45,21 +45,22 @@ pipeline {
             }
         }
 
-
-        stage('Generate Code Coverage Report') {
-            when {
-                expression { params.EJECUTE_JACOCO == 'Yes' }
+        when {
+                    expression { params.EJECUTE_JACOCO == 'Yes' }
+                }
+            stage('Generate Code Coverage Report') {
+            
+                steps {
+                    // Run JaCoCo integrated with Maven Surefire
+                    sh 'mvn jacoco:report'
+                }
             }
-            steps {
-                // Run JaCoCo integrated with Maven Surefire
-                sh 'mvn jacoco:report'
-            }
-        }
 
-        stage('Dependency Analysis') {
-            steps {
-                // Run the OWASP Dependency-Check plugin
-                sh 'mvn org.owasp:dependency-check-maven:check'
+            stage('Dependency Analysis') {
+                steps {
+                    // Run the OWASP Dependency-Check plugin
+                    sh 'mvn org.owasp:dependency-check-maven:check'
+                }
             }
         }
 
