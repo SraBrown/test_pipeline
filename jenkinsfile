@@ -11,7 +11,7 @@ pipeline {
         string(name: 'BRANCH', defaultValue: 'https://github.com/your-repo/your-project.git', description: 'Enter Git')
         choice(name: 'EJECUTE_SONAR', choices: ['Yes', 'No'], description: 'Ejecute SONAR?')
         choice(name: 'EJECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Ejecute JACOCO?')
-        //string(name: 'JAVA_HOME', defaultValue: '/usr/lib/jvm/java-17-openjdk', description: 'Enter Java')
+        string(name: 'JAVA_HOME', defaultValue: '/usr/lib/jvm/java-17-openjdk', description: 'Enter Java')
     }
 
     environment {
@@ -29,7 +29,7 @@ pipeline {
                 // Replace with your repository URL and credentials if needed
                 // git url: 'https://github.com/SraBrown/test_pipeline.git'
                 //checkout scm
-               git git_choise: 'main', url: 'https://github.com/your-repo/your-project.git'
+               git branch: 'main', url: params.BRANCH
              
             }
         }
