@@ -8,7 +8,7 @@ uedepipeline {
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
         booleanParam(name: 'EJECUTE_JAR', defaultValue: true, description: 'Enable JAR')
-        string(name: 'BRANCH', defaultValue: 'https://github.com/your-repo/your-project.git', description: 'Branch/Tags')
+        string(name: 'URL_GIT', defaultValue: 'https://github.com/your-repo/your-project.git', description: 'Branch/Tags')
         choice(name: 'EJECUTE_SONAR', choices: ['Yes', 'No'], description: 'Ejecute SONAR?')
         choice(name: 'EJECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Ejecute JACOCO?')
         string(name: 'JAVA_HOME', defaultValue: '/usr/lib/jvm/java-17-openjdk', description: 'Enter Java')
@@ -27,8 +27,7 @@ uedepipeline {
             steps {
                  echo 'Checkout the JAR! XM'
                 //checkout scm
-               git branch: 'main', url: params.BRANCH
-             
+               git branch: 'main', url: "${params.URL_GIT}"
             }
         }
 
