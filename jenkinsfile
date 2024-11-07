@@ -8,9 +8,10 @@ pipeline {
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
         booleanParam(name: 'EJECUTE_JAR', defaultValue: true, description: 'Enable JAR')
-        choice(name: 'GIT_CHOICE', choices: ['branch', 'tag'], description: 'Ejecute JACOCO?')
+        choice(name: 'git_choise', choices: ['branch', 'tag'], description: 'Ejecute JACOCO?')
         choice(name: 'EJECUTE_SONAR', choices: ['Yes', 'No'], description: 'Ejecute SONAR?')
         choice(name: 'EJECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Ejecute JACOCO?')
+        string(name: 'JAVA_HOME', defaultValue: '/usr/lib/jvm/java-17-openjdk', description: 'Enter Java')
     }
 
     environment {
@@ -18,7 +19,7 @@ pipeline {
         SONAR_PROJECT_KEY = 'your-project-key'
         SONAR_PROJECT_NAME = 'Your Project Name'
         SONAR_PROJECT_VERSION = '1.0'
-     
+        JAVA_HOME =  params.JAVA_HOME // Adjust path as needed
     }
     
     stages {
@@ -26,8 +27,10 @@ pipeline {
             steps {
                  echo 'Checkout the JAR! XM'
                 // Replace with your repository URL and credentials if needed
-              // git url: 'https://github.com/SraBrown/test_pipeline.git'
-                checkout scm
+                // git url: 'https://github.com/SraBrown/test_pipeline.git'
+                //checkout scm
+               git git_choise: 'main', url: 'https://github.com/your-repo/your-project.git'
+             
             }
         }
 
@@ -45,22 +48,24 @@ pipeline {
             }
         }
 
-        when {
-                    expression { params.EJECUTE_JACOCO == 'Yes' }
-                }
-            stage('Generate Code Coverage Report') {
-            
-                steps {
-                    // Run JaCoCo integrated with Maven Surefire
-                    sh 'mvn jacoco:report'
-                }
-            }
 
-            stage('Dependency Analysis') {
-                steps {
-                    // Run the OWASP Dependency-Check plugin
-                    sh 'mvn org.owasp:dependency-check-maven:check'
-                }
+        stage('Generate Code Coverage Report') {
+            when {
+                expression { params.EJECUTE_SONAR == 'Yes' }
+            }
+            steps {
+                // Run JaCoCo integrated with Maven Surefire
+                sh 'mvn jacoco:report'
+            }
+        }
+
+        stage('Dependency Analysis') {
+            when {
+                expression { params.EJECUTE_SONAR == 'Yes' }
+            }
+            steps {
+                // Run the OWASP Dependency-Check plugin
+                sh 'mvn org.owasp:dependency-check-maven:check'
             }
         }
 
