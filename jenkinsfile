@@ -14,7 +14,6 @@ pipeline {
         string(name: 'JAVA_HOME', defaultValue: '/usr/lib/jvm/java-17-openjdk', description: 'Enter Java')
     }
 
-
     environment {
         SONARQUBE_SERVER = 'SonarQube' // Name of the SonarQube server in Jenkins
         SONAR_PROJECT_KEY = 'your-project-key'
