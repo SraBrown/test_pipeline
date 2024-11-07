@@ -27,7 +27,7 @@ uedepipeline {
             steps {
                  echo 'Checkout the JAR! XM'
                 //checkout scm
-               git branch: 'main', url: '${params.URL_GIT}'
+               //git branch: 'main', url: '${params.URL_GIT}'
             }
         }
 
