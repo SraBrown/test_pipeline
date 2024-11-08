@@ -72,7 +72,7 @@ pipeline {
                     script {
                         if (params.EJECUTE_JAR) {
                             echo 'Starting Buil, ${params.LANGUAGE}!'
-                                sh 'mvn clean package'
+                                sh 'mvn clean install'
                         }
                 }
             }
