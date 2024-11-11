@@ -31,7 +31,16 @@ pipeline {
 
             }
         }
-
+       stage('Build and Test') {
+                steps {
+                    script {
+                        if (params.EXECUTE_JAR) {
+                            echo 'Starting Build, Execute Test and Jar!'
+                            sh 'mvn clean test -Pcoverage"'
+                        }
+                    }
+                }
+            }
         stage('Generate Code Coverage Report') {
             when {
                 expression { params.EXECUTE_JACOCO == 'Yes' }
@@ -50,19 +59,7 @@ pipeline {
                 sh 'mvn org.owasp:dependency-check-maven:check'
             }
         }
-
-       stage('Build and Test') {
-            steps {
-                script {
-                    if (params.EXECUTE_JAR) {
-                        echo 'Starting Build, Execute Test and Jar!'
-                        sh 'mvn clean test -Pcoverage"'
-                    }
-                }
-            }
-        }
-
-        stage('SonarQube Analysis') {
+    stage('SonarQube Analysis') {
            when {
                 expression { params.EXECUTE_SONAR == 'Yes' }
             }
