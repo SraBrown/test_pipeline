@@ -78,7 +78,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh 'sonar-scanner -Dsonar.projectKey=ASSDA -Dsonar.sources=src -Dsonar.host.url=http://localhost:9000 -Dsonar.login=TOKEN_SONAR'
+                    sh 'sonar -Dsonar.projectKey=ASSDA -Dsonar.sources=src -Dsonar.host.url=http://localhost:9000 -Dsonar.login=TOKEN_SONAR'
                 }
             }
         }
