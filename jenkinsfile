@@ -30,7 +30,7 @@ pipeline {
 
             }
         }
-       stage('Build and Test') {
+       stage('Test') {
                 steps {
                     script {
                         if (params.EXECUTE_JAR) {
@@ -84,6 +84,17 @@ pipeline {
                 }
             }
         }
+
+     stage('Build') {
+                steps {
+                    script {
+                        if (params.EXECUTE_JAR) {
+                            echo 'Starting Build, Execute Test and Jar!'
+                            sh 'mvn clean install'
+                        }
+                    }
+                }
+            }
 
     stage('Archive') {
             steps {
