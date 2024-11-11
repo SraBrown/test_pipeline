@@ -8,11 +8,11 @@ pipeline {
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
         booleanParam(name: 'EXECUTE_JAR', defaultValue: true, description: 'Enable JAR')
-        string(name: 'URL_GIT', defaultValue: 'https://github.com/your-repo/your-project.git', description: 'Branch/Tags')
+        string(name: 'URL_GIT', defaultValue: 'https://github.com/your-repo/your-project.git', description: 'Branch Specifier')
         string(name: 'BRANCH', defaultValue: 'develop', description: 'Branch Specifier')
         choice(name: 'EXECUTE_SONAR', choices: ['Yes', 'No'], description: 'Execute SONAR?')
         choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
-        string(name: 'TOKEN_SONAR', defaultValue: 'squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00', description: 'Branch Specifier')
+        string(name: 'TOKEN_SONAR', defaultValue: 'squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00', description: 'Token Sonar')
         string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
     }
     environment {
