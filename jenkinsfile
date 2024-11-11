@@ -51,12 +51,12 @@ pipeline {
             }
         }
 
-        stage('Build') {
+       stage('Build and Test') {
             steps {
                 script {
                     if (params.EXECUTE_JAR) {
-                        echo 'Starting Build, Execute Jar!'
-                        sh 'mvn clean package'
+                        echo 'Starting Build, Execute Test and Jar!'
+                        sh 'mvn clean test -Pcoverage"'
                     }
                 }
             }
