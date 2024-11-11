@@ -8,7 +8,7 @@ pipeline {
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
         booleanParam(name: 'EXECUTE_JAR', defaultValue: true, description: 'Enable JAR')
-        string(name: 'URL_GIT', defaultValue: 'https://github.com/SraBrown/test_pipeline.git', description: 'Branch Specifier')
+        string(name: 'URL_GIT', defaultValue: 'https://github.com/your-repo/your-project.git', description: 'Branch Specifier')
         string(name: 'BRANCH', defaultValue: 'develop', description: 'Branch Specifier')
         choice(name: 'EXECUTE_SONAR', choices: ['Yes', 'No'], description: 'Execute SONAR?')
         choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
@@ -18,7 +18,7 @@ pipeline {
     environment {
         SONARQUBE_SERVER = 'SonarQube' // Name of the SonarQube server in Jenkins
         SONAR_PROJECT_KEY = 'your-project-key'
-        SONAR_PROJECT_NAME = 'Your Project Name'
+        SONAR_PROJECT_NAME = 'ASSDA'
         SONAR_PROJECT_VERSION = '1.0'
     }
     stages {
@@ -30,20 +30,16 @@ pipeline {
 
             }
         }
-
-     stage('Build') {
+       stage('Build and Test') {
                 steps {
                     script {
                         if (params.EXECUTE_JAR) {
                             echo 'Starting Build, Execute Test and Jar!'
-                            sh 'mvn clean install'
-                            sh 'mvn test -Pcoverage'
+                            sh 'mvn clean test -Pcoverage'
                         }
                     }
                 }
             }
-
-      
         stage('Generate Code Coverage Report') {
             when {
                 expression { params.EXECUTE_JACOCO == 'Yes' }
@@ -75,8 +71,6 @@ pipeline {
                 }
             }
         }
-
-/*
         stage('Quality Gate') {
         when {
                 expression { params.EXECUTE_SONAR == 'Yes' }
@@ -90,7 +84,6 @@ pipeline {
                 }
             }
         }
-*/
 
     stage('Archive') {
             steps {
