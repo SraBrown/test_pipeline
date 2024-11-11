@@ -63,6 +63,9 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
+           when {
+                expression { params.EXECUTE_SONAR == 'Yes' }
+            }
             steps {
                 script {
                     // Run SonarQube analysis
@@ -73,6 +76,9 @@ pipeline {
             }
         }
         stage('Quality Gate') {
+        when {
+                expression { params.EXECUTE_SONAR == 'Yes' }
+            }
             steps {
                 script {
                     // Wait for SonarQube analysis to finish and check quality gate status
