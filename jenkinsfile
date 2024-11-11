@@ -37,21 +37,13 @@ pipeline {
                         if (params.EXECUTE_JAR) {
                             echo 'Starting Build, Execute Test and Jar!'
                             sh 'mvn clean install'
-                        }
-                    }
-                }
-            }
-
-       stage('Test') {
-                steps {
-                    script {
-                        if (params.EXECUTE_JAR) {
-                            echo 'Starting Build, Execute Test and Jar!'
                             sh 'mvn test -Pcoverage'
                         }
                     }
                 }
             }
+
+      
         stage('Generate Code Coverage Report') {
             when {
                 expression { params.EXECUTE_JACOCO == 'Yes' }
