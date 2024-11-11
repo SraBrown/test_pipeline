@@ -1,7 +1,6 @@
 pipeline {
-    agent {
-        label 'jdk17'
-    }
+    agent any
+
     tools {
         maven 'Maven Apache'
 
@@ -14,21 +13,22 @@ pipeline {
         choice(name: 'EXECUTE_SONAR', choices: ['Yes', 'No'], description: 'Execute SONAR?')
         choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
         string(name: 'TOKEN_SONAR', defaultValue: 'squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00', description: 'Branch Specifier')
-        string(name: 'JAVA_HOME', defaultValue: '/usr/lib/jvm/java-17-openjdk', description: 'Enter Java')
+        string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
     }
     environment {
         SONARQUBE_SERVER = 'SonarQube' // Name of the SonarQube server in Jenkins
         SONAR_PROJECT_KEY = 'your-project-key'
         SONAR_PROJECT_NAME = 'Your Project Name'
         SONAR_PROJECT_VERSION = '1.0'
+        JAVA_HOME =  params.JAVA_HOME
     }
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checkout the JAR! XM'
+                echo 'Checkout the JAR!'
                 checkout scmGit(branches: [[name: '$BRANCH']], extensions: [], userRemoteConfigs:
                         [[credentialsId: 'GITLAB_CREDENTIALS', url: "${params.URL_GIT}"]])
-                // git branch: 'main', url: "${params.URL_GIT}"
+
             }
         }
 
@@ -55,7 +55,7 @@ pipeline {
             steps {
                 script {
                     if (params.EXECUTE_JAR) {
-                        echo 'Starting Build, ${params.LANGUAGE}!'
+                        echo 'Starting Build, Execute Jar!'
                         sh 'mvn clean package'
                     }
                 }
