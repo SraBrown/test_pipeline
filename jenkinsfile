@@ -35,7 +35,7 @@ pipeline {
                     script {
                         if (params.EXECUTE_JAR) {
                             echo 'Starting Build, Execute Test and Jar!'
-                            sh 'mvn clean test'
+                            sh 'mvn clean test -Pcoverage'
                         }
                     }
                 }
