@@ -16,10 +16,11 @@ pipeline {
         string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
     }
     environment {
-        SONARQUBE_SERVER = 'http://localhost:9000' // Name of the SonarQube server in Jenkins
-        SONAR_PROJECT_KEY = 'your-project-key'
+        SONARQUBE_SERVER = 'SonarQube' // Name of the SonarQube server in Jenkins
+        SONAR_PROJECT_KEY = 'ASSDA'
         SONAR_PROJECT_NAME = 'ASSDA'
         SONAR_PROJECT_VERSION = '1.0'
+        TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
     }
     stages {
         stage('Checkout') {
@@ -58,6 +59,8 @@ pipeline {
                 sh 'mvn org.owasp:dependency-check-maven:check'
             }
         }
+
+      /*
     stage('SonarQube Analysis') {
            when {
                 expression { params.EXECUTE_SONAR == 'Yes' }
@@ -70,7 +73,17 @@ pipeline {
                     }
                 }
             }
+        }*/
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'sonar-scanner -Dsonar.projectKey=ASSDA -Dsonar.sources=src -Dsonar.host.url=http://localhost:9000 -Dsonar.login=TOKEN_SONAR'
+                }
+            }
         }
+
+
 
 /*
         stage('Quality Gate') {
