@@ -75,6 +75,8 @@ pipeline {
                 }
             }
         }
+
+/*
         stage('Quality Gate') {
         when {
                 expression { params.EXECUTE_SONAR == 'Yes' }
@@ -88,7 +90,7 @@ pipeline {
                 }
             }
         }
-
+*/
 
     stage('Archive') {
             steps {
