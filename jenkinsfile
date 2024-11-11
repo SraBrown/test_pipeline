@@ -30,12 +30,24 @@ pipeline {
 
             }
         }
+
+     stage('Build') {
+                steps {
+                    script {
+                        if (params.EXECUTE_JAR) {
+                            echo 'Starting Build, Execute Test and Jar!'
+                            sh 'mvn clean install'
+                        }
+                    }
+                }
+            }
+
        stage('Test') {
                 steps {
                     script {
                         if (params.EXECUTE_JAR) {
                             echo 'Starting Build, Execute Test and Jar!'
-                            sh 'mvn clean test -Pcoverage'
+                            sh 'mvn test -Pcoverage'
                         }
                     }
                 }
@@ -85,16 +97,6 @@ pipeline {
             }
         }
 
-     stage('Build') {
-                steps {
-                    script {
-                        if (params.EXECUTE_JAR) {
-                            echo 'Starting Build, Execute Test and Jar!'
-                            sh 'mvn clean install'
-                        }
-                    }
-                }
-            }
 
     stage('Archive') {
             steps {
