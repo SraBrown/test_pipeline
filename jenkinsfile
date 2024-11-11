@@ -34,7 +34,7 @@ pipeline {
 
         stage('Generate Code Coverage Report') {
             when {
-                expression { params.EXECUTE_SONAR == 'Yes' }
+                expression { params.EXECUTE_JACOCO == 'Yes' }
             }
             steps {
                 // Run JaCoCo integrated with Maven Surefire
@@ -43,7 +43,7 @@ pipeline {
         }
         stage('Dependency Analysis') {
             when {
-                expression { params.EXECUTE_SONAR == 'Yes' }
+                expression { params.EXECUTE_JACOCO == 'Yes' }
             }
             steps {
                 // Run the OWASP Dependency-Check plugin
