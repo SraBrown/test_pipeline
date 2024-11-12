@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     tools {
         maven 'Maven Apache'
 
@@ -47,7 +46,6 @@ pipeline {
                 expression { params.EXECUTE_JACOCO == 'Yes' }
             }
             steps {
-                 //sh 'mvn clean install'  
                  sh 'mvn clean verify -Djacoco.agent.version=0.8.7 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
             }
         }
@@ -68,8 +66,7 @@ pipeline {
                 sh 'mvn org.owasp:dependency-check-maven:check'
             }
         }
-/*
-    stage('SonarQube Analysis') {
+        /*  stage('SonarQube Analysis') {
            when {
                 expression { params.EXECUTE_SONAR == 'Yes' }
             }
@@ -88,10 +85,7 @@ pipeline {
             when {
                       expression { params.EXECUTE_SONAR == 'Yes' }
                     }
-           //environment {
-             //   scannerHome = tool 'SonarQube Scanner'
-            //}
-            steps {
+          steps {
                 withSonarQubeEnv('SonarQube') {
                    sh "mvn clean verify sonar:sonar \
                          -Dsonar.projectKey=ASSDA \
