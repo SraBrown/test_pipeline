@@ -21,6 +21,8 @@ pipeline {
         SONAR_PROJECT_NAME = 'ASSDA'
         SONAR_PROJECT_VERSION = '1.0'
         TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
+        JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
+
     }
     stages {
         stage('Checkout') {
@@ -84,7 +86,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv('SonarQube') {
-                   sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_NAME} -Dsonar.sources=src -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${TOKEN_SONAR}"
+                   sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_NAME} -Dsonar.sources=src -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${TOKEN_SONAR}  -Dsonar.jacoco.reportPath=${JACOCO_REPORT_PATH}""
                 }
             }
         }
