@@ -47,7 +47,7 @@ pipeline {
                 expression { params.EXECUTE_JACOCO == 'Yes' }
             }
             steps {
-                // sh 'mvn clean verify -Djacoco.agent.version=0.8.7 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
+                 sh 'mvn clean verify -Djacoco.agent.version=0.8.7 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
             }
         }
         stage('JaCoCo Report') {
