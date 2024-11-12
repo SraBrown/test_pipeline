@@ -60,7 +60,7 @@ pipeline {
                 sh 'mvn org.owasp:dependency-check-maven:check'
             }
         }
-
+/*
     stage('SonarQube Analysis') {
            when {
                 expression { params.EXECUTE_SONAR == 'Yes' }
@@ -74,11 +74,12 @@ pipeline {
                 }
             }
         }
-/*
+        */
+
         stage('SonarQube Analysis') {
             when {
-                            expression { params.EXECUTE_SONAR == 'Yes' }
-                        }
+                      expression { params.EXECUTE_SONAR == 'Yes' }
+                    }
            environment {
                 scannerHome = tool 'SonarQube Scanner'
             }
@@ -88,7 +89,7 @@ pipeline {
                 }
             }
         }
-*/
+/*
   stage('Quality Gate') {
         when {
                 expression { params.EXECUTE_SONAR == 'Yes' }
@@ -102,7 +103,7 @@ pipeline {
                 }
             }
         }
-
+*/
     stage('Archive') {
             steps {
                 // Archive the JAR file (adjust the path to your output file as necessary)
