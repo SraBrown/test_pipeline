@@ -49,21 +49,21 @@ pipeline {
             steps {
                 // Run JaCoCo integrated with Maven Surefire
                 sh 'mvn jacoco:report'
-                   /* Se prepara jacoco */
-                        echo 'Preparing jacoco'
-                        def cliJacoco = "${mvnPrompt}"
-                        cliJacoco += ' -s ' + settings
-                        cliJacoco += ' -Djavax.net.ssl.trustStore=security/' + keystoreName
-                        cliJacoco += ' -Djavax.net.ssl.trustStorePassword=' + keystorePassword
-                        cliJacoco += ' org.jacoco:jacoco-maven-plugin:prepare-agent'
-                        cliJacoco += ' test '
-                        cliJacoco += ' org.jacoco:jacoco-maven-plugin:report '
-                        cliJacoco += ' -Dskip.integration.tests=true '
-                        cliJacoco += ' -B -U -P ' + applicationProperties.getMavenProfile()
+                #!/bin/bash
 
-                        sh cliJacoco
+                # Compilar el proyecto
+                echo "Compilando el proyecto..."
+                # Asumiendo que el código fuente está en src y se compila en bin
+                javac -d bin src/*.java
+                
+                # Ejecutar pruebas con JaCoCo
+                echo "Ejecutando pruebas con JaCoCo..."
+                java -javaagent:lib/jacocoagent.jar=destfile=jacoco.exec -cp bin:lib/* org.junit.runner.JUnitCore MiClaseDePrueba
+                
+                # Generar el informe de cobertura
+                echo "Generando informe de cobertura..."
+                java -jar lib/jacococli.jar report jacoco.exec --classfiles bin --sourcefiles src --html report
 
-                        cli += ' -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml '
             }
         }
         stage('Dependency Analysis') {
