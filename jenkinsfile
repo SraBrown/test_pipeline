@@ -76,6 +76,9 @@ pipeline {
         }*/
 
         stage('SonarQube Analysis') {
+            when {
+                            expression { params.EXECUTE_SONAR == 'Yes' }
+                        }
            environment {
                 scannerHome = tool 'SonarQube Scanner'
             }
