@@ -47,22 +47,16 @@ pipeline {
                 expression { params.EXECUTE_JACOCO == 'Yes' }
             }
             steps {
-                // Run JaCoCo integrated with Maven Surefire
-                sh 'mvn jacoco:report'
-               
-                //Compilar el proyecto
-                echo "Compilando el proyecto..."
-                //Asumiendo que el código fuente está en src y se compila en bin
-                javac -d bin src/*.java
-                
-                //Ejecutar pruebas con JaCoCo
-                echo "Ejecutando pruebas con JaCoCo..."
-                java -javaagent:lib/jacocoagent.jar=destfile=jacoco.exec -cp bin:lib/* org.junit.runner.JUnitCore MiClaseDePrueba
-                
-                //Generar el informe de cobertura
-                echo "Generando informe de cobertura..."
-                java -jar lib/jacococli.jar report jacoco.exec --classfiles bin --sourcefiles src --html report
-
+                // sh "mvn clean verify -Djacoco.agent.version=0.8.7 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco"
+            }
+        }
+        stage('JaCoCo Report') {
+            steps {
+                // Generar reporte de JaCoCo usando el archivo de ejecución
+                script {
+                    // Si deseas generar el reporte HTML o en otro formato, puedes hacerlo aquí.
+                    sh "mvn jacoco:report"
+                }
             }
         }
         stage('Dependency Analysis') {
