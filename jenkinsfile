@@ -80,8 +80,8 @@ pipeline {
                 scannerHome = tool 'SonarQube Scanner'
             }
             steps {
-                withSonarQubeEnv('SonarQube') {
-                   sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_NAME} -Dsonar.sources=src -Dsonar.host.url=http://localhost:9000 -Dsonar.login=TOKEN_SONAR"
+                withSonarQubeEnv(${SONARQUBE_SERVER}) {
+                   sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_NAME} -Dsonar.sources=src -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${TOKEN_SONAR}"
                 }
             }
         }
