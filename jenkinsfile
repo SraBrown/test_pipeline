@@ -49,12 +49,24 @@ pipeline {
             steps {
                 // Run JaCoCo integrated with Maven Surefire
                 sh 'mvn jacoco:report'
+                   /* Se prepara jacoco */
+                        echo 'Preparing jacoco'
+                        def cliJacoco = "${mvnPrompt}"
+                        cliJacoco += ' -s ' + settings
+                        cliJacoco += ' -Djavax.net.ssl.trustStore=security/' + keystoreName
+                        cliJacoco += ' -Djavax.net.ssl.trustStorePassword=' + keystorePassword
+                        cliJacoco += ' org.jacoco:jacoco-maven-plugin:prepare-agent'
+                        cliJacoco += ' test '
+                        cliJacoco += ' org.jacoco:jacoco-maven-plugin:report '
+                        cliJacoco += ' -Dskip.integration.tests=true '
+                        cliJacoco += ' -B -U -P ' + applicationProperties.getMavenProfile()
+
+                        sh cliJacoco
+
+                        cli += ' -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml '
             }
         }
         stage('Dependency Analysis') {
-            when {
-                expression { params.EXECUTE_JACOCO == 'Yes' }
-            }
             steps {
                 // Run the OWASP Dependency-Check plugin
                 sh 'mvn org.owasp:dependency-check-maven:check'
