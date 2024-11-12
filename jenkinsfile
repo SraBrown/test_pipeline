@@ -50,16 +50,16 @@ pipeline {
                 // Run JaCoCo integrated with Maven Surefire
                 sh 'mvn jacoco:report'
                
-                # Compilar el proyecto
+                //Compilar el proyecto
                 echo "Compilando el proyecto..."
-                # Asumiendo que el código fuente está en src y se compila en bin
+                //Asumiendo que el código fuente está en src y se compila en bin
                 javac -d bin src/*.java
                 
-                # Ejecutar pruebas con JaCoCo
+                //Ejecutar pruebas con JaCoCo
                 echo "Ejecutando pruebas con JaCoCo..."
                 java -javaagent:lib/jacocoagent.jar=destfile=jacoco.exec -cp bin:lib/* org.junit.runner.JUnitCore MiClaseDePrueba
                 
-                # Generar el informe de cobertura
+                //Generar el informe de cobertura
                 echo "Generando informe de cobertura..."
                 java -jar lib/jacococli.jar report jacoco.exec --classfiles bin --sourcefiles src --html report
 
