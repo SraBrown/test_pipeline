@@ -89,7 +89,7 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                    sh "mvn clean verify sonar:sonar \
                          -Dsonar.projectKey=ASSDA \
-                         -Dsonar.host.url=http://sonar:9000 \
+                         -Dsonar.host.url=http://localhost:9000 \
                          -Dsonar.login=token_sonar"
                 }
             }
