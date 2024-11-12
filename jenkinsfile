@@ -49,8 +49,7 @@ pipeline {
             steps {
                 // Run JaCoCo integrated with Maven Surefire
                 sh 'mvn jacoco:report'
-                #!/bin/bash
-
+               
                 # Compilar el proyecto
                 echo "Compilando el proyecto..."
                 # Asumiendo que el código fuente está en src y se compila en bin
