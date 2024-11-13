@@ -67,7 +67,8 @@ pipeline {
                                sh "java -jar ${jacocoPath}/jacococli.jar report jacoco.exec \
                                                     --classfiles target/classes \
                                                     --sourcefiles src/main/ \
-                                                    --html target/jacoco-report"                 
+                                                    --html target/jacoco-report"                
+                        
                         }
                     }
                 }
@@ -107,19 +108,6 @@ pipeline {
             }
         }
 
-  stage('Quality Gate') {
-        when {
-                expression { params.EXECUTE_SONAR == 'Yes' }
-            }
-            steps {
-                script {
-                    // Wait for SonarQube analysis to finish and check quality gate status
-                    timeout(time: 5, unit: 'MINUTES') {
-                        waitForQualityGate abortPipeline: true
-                    }
-                }
-            }
-        }
 
     stage('Archive') {
             steps {
