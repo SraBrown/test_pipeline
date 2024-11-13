@@ -64,11 +64,12 @@ pipeline {
                             sh "ls -l ${jacocoPath}"
                             //sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
                             //sh 'mvn ${jacocoPath}:report'
-                               sh "java -jar ${jacocoPath}/jacococli.jar report jacoco.exec \
+                               sh '''
+                                                    java -jar ${jacocoPath}/jacococli.jar report jacoco.exec \
                                                     --classfiles target/classes \
-                                                    --sourcefiles src/main/ \
-                                                    --html target/jacoco-report"                
-                        
+                                                    --sourcefiles src/main/java \
+                                                    --html target/jacoco-report
+                                                    '''
                         }
                     }
                 }
@@ -101,14 +102,27 @@ pipeline {
           steps {
                 withSonarQubeEnv('SonarQube') {
                    sh "mvn clean verify sonar:sonar \
-                         -Dsonar.projectKey=ASSDA \
+                         -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                          -Dsonar.host.url=http://localhost:9000 \
                          -Dsonar.login=token_sonar"
                 }
             }
         }
-
-
+/*
+  stage('Quality Gate') {
+        when {
+                expression { params.EXECUTE_SONAR == 'Yes' }
+            }
+            steps {
+                script {
+                    // Wait for SonarQube analysis to finish and check quality gate status
+                    timeout(time: 5, unit: 'MINUTES') {
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
+            }
+        }
+*/
     stage('Archive') {
             steps {
                 // Archive the JAR file (adjust the path to your output file as necessary)
