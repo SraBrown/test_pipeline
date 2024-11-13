@@ -9,6 +9,7 @@ pipeline {
         booleanParam(name: 'EXECUTE_JAR', defaultValue: true, description: 'Enable JAR')
         string(name: 'URL_GIT', defaultValue: 'https://github.com/your-repo/your-project.git', description: 'Branch Specifier')
         string(name: 'BRANCH', defaultValue: 'develop', description: 'Branch Specifier')
+        string(name: 'GITLAB_CREDENTIALS', defaultValue: 'GITLAB_CREDENTIALS', description: 'Name Token')
         choice(name: 'EXECUTE_SONAR', choices: ['Yes', 'No'], description: 'Execute SONAR?')
         choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
         string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
@@ -20,23 +21,23 @@ pipeline {
         SONAR_PROJECT_VERSION = '1.0'
         TOKEN_SONAR ='c3F1XzY1YzE5MWMwNjkzM2IxYzNhZDNjZjdmZmY5YTdiNTk5NTRmNjdhMDA='
         JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
-
     }
     stages {
         stage('Checkout') {
             steps {
                 echo 'Checkout the JAR!'
                 checkout scmGit(branches: [[name: '$BRANCH']], extensions: [], userRemoteConfigs:
-                        [[credentialsId: 'GITLAB_CREDENTIALS', url: "${params.URL_GIT}"]])
+                        [[credentialsId: "${params.GITLAB_CREDENTIALS}", url: "${params.URL_GIT}"]])
 
             }
         }
-       stage('Build and Test') {
+       stage('Build and Install') {
                 steps {
                     script {
                         if (params.EXECUTE_JAR) {
-                            echo 'Starting Build, Execute Test and Jar!'
-                            sh 'mvn clean test -Pcoverage'
+                            echo 'Starting Build ,params.EXECUTE_JAR=true!'
+                            //sh 'mvn clean test -Pcoverage'
+                            sh 'mvn clean package'
                         }
                     }
                 }
@@ -49,7 +50,7 @@ pipeline {
                  sh 'mvn clean verify -Djacoco.agent.version=0.8.7 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
             }
         }
-/*
+
         stage('JaCoCo Report') {
             steps {
                 // Generar reporte de JaCoCo usando el archivo de ejecución
@@ -59,7 +60,7 @@ pipeline {
                 }
             }
         }
-*/
+
         stage('Dependency Analysis') {
             steps {
                 // Run the OWASP Dependency-Check plugin
