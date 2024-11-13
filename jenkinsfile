@@ -73,7 +73,7 @@ pipeline {
                     }
                 }
 
-/*
+
         stage('JaCoCo Report') {
             steps {
                 // Generar reporte de JaCoCo usando el archivo de ejecución
@@ -83,14 +83,14 @@ pipeline {
                 }
             }
         }
-*/
+/*
         stage('Dependency Analysis') {
             steps {
                 // Run the OWASP Dependency-Check plugin
                 sh 'mvn org.owasp:dependency-check-maven:check'
             }
         }
-        /*  stage('SonarQube Analysis') {
+   stage('SonarQube Analysis') {
            when {
                 expression { params.EXECUTE_SONAR == 'Yes' }
             }
