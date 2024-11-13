@@ -71,7 +71,18 @@ pipeline {
                     }
                 }
 
-     
+          stage('Publish Report') {
+                    steps {
+                        publishHTML(target: [
+                            reportName: 'JaCoCo Coverage Report',
+                            reportDir: 'target/jacoco-report',
+                            reportFiles: 'index.html',
+                            alwaysLinkToLastBuild: true,
+                            keepAll: true
+                        ])
+                    }
+                }
+/*           
         stage('JaCoCo Report') {
             steps {
                 // Generar reporte de JaCoCo usando el archivo de ejecución
@@ -81,7 +92,7 @@ pipeline {
                 }
             }
         }
-/*
+
         stage('Dependency Analysis') {
             steps {
                 // Run the OWASP Dependency-Check plugin
