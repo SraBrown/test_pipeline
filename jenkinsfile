@@ -43,9 +43,9 @@ pipeline {
                     }
                 }
             }
-        
-        
-        
+
+
+
         stage('Prepare Jacoco') {
             when {
                             expression { params.EXECUTE_JACOCO == 'Yes' }
@@ -82,7 +82,7 @@ pipeline {
                         ])
                     }
                 }
-/*           
+        /*
         stage('JaCoCo Report') {
             steps {
                 // Generar reporte de JaCoCo usando el archivo de ejecución
@@ -99,7 +99,7 @@ pipeline {
                 sh 'mvn org.owasp:dependency-check-maven:check'
             }
         }
-   stage('SonarQube Analysis') {
+        stage('SonarQube Analysis') {
            when {
                 expression { params.EXECUTE_SONAR == 'Yes' }
             }
@@ -141,7 +141,7 @@ pipeline {
                 }
             }
         }
-*/
+
     stage('Archive') {
             steps {
                 // Archive the JAR file (adjust the path to your output file as necessary)
