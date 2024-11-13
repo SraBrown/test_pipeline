@@ -37,7 +37,7 @@ pipeline {
                     script {
                         if (params.EXECUTE_JAR) {
                             echo 'Starting Build ,params.EXECUTE_JAR=true!'
-                            sh 'mvn clean package'
+                            sh 'mvn clean package -DskipTests'
                         }
                     }
                 }
@@ -62,24 +62,17 @@ pipeline {
 
                             // Verifica que los archivos se hayan descargado
                             sh "ls -l ${jacocoPath}"
-                            sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
-                            sh 'mvn ${jacocoPath}:report'
+                            //sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
+                            //sh 'mvn ${jacocoPath}:report'
+                              sh '''
+                                            mvn test -DargLine="-javaagent:${jacocoPath}/jacocoagent.jar=destfile=jacoco.exec,output=file"
+                                            '''
                         }
                     }
                 }
 
-   
-        /*
-        stage('JaCoCo Report') {
-            steps {
-                // Generar reporte de JaCoCo usando el archivo de ejecución
-                script {
-                    // Si deseas generar el reporte HTML o en otro formato, puedes hacerlo aquí.
-                    sh 'mvn jacoco:report'
-                }
-            }
-        }
 
+        /*
         stage('Dependency Analysis') {
             steps {
                 // Run the OWASP Dependency-Check plugin
