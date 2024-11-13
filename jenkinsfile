@@ -42,6 +42,7 @@ pipeline {
                     }
                 }
             }
+            /*
         stage('Generate Code Coverage Report') {
             when {
                 expression { params.EXECUTE_JACOCO == 'Yes' }
@@ -50,7 +51,29 @@ pipeline {
                  sh 'mvn clean verify -Djacoco.agent.version=0.8.7 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
             }
         }
+        */
+        stage('Prepare Jacoco') {
+                    steps {
+                        script {
+                        echo 'Iniciar descarga de jacoco'
+                            // Ruta donde se almacenarán los JARs
+                            def jacocoPath = "${env.WORKSPACE}/jacoco"
+                            // Crea el directorio si no existe
+                            sh "mkdir -p ${jacocoPath}"
 
+                            // Descarga jacocoagent.jar y jacococli.jar
+                            sh """
+                                curl -L -o ${jacocoPath}/jacocoagent.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/0.8.8/org.jacoco.agent-0.8.8-runtime.jar
+                                curl -L -o ${jacocoPath}/jacococli.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/0.8.8/org.jacoco.cli-0.8.8-nodeps.jar
+                            """
+
+                            // Verifica que los archivos se hayan descargado
+                            sh "ls -l ${jacocoPath}"
+                        }
+                    }
+                }
+
+/*
         stage('JaCoCo Report') {
             steps {
                 // Generar reporte de JaCoCo usando el archivo de ejecución
@@ -60,7 +83,7 @@ pipeline {
                 }
             }
         }
-
+*/
         stage('Dependency Analysis') {
             steps {
                 // Run the OWASP Dependency-Check plugin
