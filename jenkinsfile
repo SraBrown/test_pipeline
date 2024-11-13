@@ -37,14 +37,11 @@ pipeline {
                     script {
                         if (params.EXECUTE_JAR) {
                             echo 'Starting Build ,params.EXECUTE_JAR=true!'
-                            //sh 'mvn clean test -Pcoverage'
                             sh 'mvn clean package'
                         }
                     }
                 }
             }
-
-
 
         stage('Prepare Jacoco') {
             when {
@@ -57,7 +54,6 @@ pipeline {
                             def jacocoPath = "${env.WORKSPACE}/jacoco"
                             // Crea el directorio si no existe
                             sh "mkdir -p ${jacocoPath}"
-
                             // Descarga jacocoagent.jar y jacococli.jar
                             sh """
                                 curl -L -o ${jacocoPath}/jacocoagent.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/0.8.8/org.jacoco.agent-0.8.8-runtime.jar
@@ -66,23 +62,14 @@ pipeline {
 
                             // Verifica que los archivos se hayan descargado
                             sh "ls -l ${jacocoPath}"
-                            sh 'mvn clean verify -Djacoco.agent.version=0.8.7 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
+                            sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
+                            sh 'mvn ${jacocoPath}:report'
                         }
                     }
                 }
- /*
-          stage('Publish Report') {
-                    steps {
-                        publishHTML(target: [
-                            reportName: 'JaCoCo Coverage Report',
-                            reportDir: 'target/jacoco-report',
-                            reportFiles: 'index.html',
-                            alwaysLinkToLastBuild: true,
-                            keepAll: true
-                        ])
-                    }
-                }
-       
+
+   
+        /*
         stage('JaCoCo Report') {
             steps {
                 // Generar reporte de JaCoCo usando el archivo de ejecución
