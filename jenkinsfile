@@ -65,7 +65,7 @@ pipeline {
                             //sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
                             //sh 'mvn ${jacocoPath}:report'
                               sh '''
-                                            mvn test -DargLine="-javaagent:${jacocoPath}/jacocoagent.jar=destfile=jacoco.exec,output=file"
+                                            mvn test -DargLine="-javaagent:jacocoagent.jar=destfile=jacoco.exec,output=file"
                                             '''
                         }
                     }
