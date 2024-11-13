@@ -70,7 +70,7 @@ pipeline {
                         }
                     }
                 }
-
+ /*
           stage('Publish Report') {
                     steps {
                         publishHTML(target: [
@@ -82,7 +82,7 @@ pipeline {
                         ])
                     }
                 }
-        /*
+       
         stage('JaCoCo Report') {
             steps {
                 // Generar reporte de JaCoCo usando el archivo de ejecución
