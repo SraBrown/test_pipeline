@@ -42,16 +42,9 @@ pipeline {
                     }
                 }
             }
-            /*
-        stage('Generate Code Coverage Report') {
-            when {
-                expression { params.EXECUTE_JACOCO == 'Yes' }
-            }
-            steps {
-                 sh 'mvn clean verify -Djacoco.agent.version=0.8.7 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
-            }
-        }
-        */
+        
+        
+        
         stage('Prepare Jacoco') {
                     steps {
                         script {
@@ -73,7 +66,16 @@ pipeline {
                     }
                 }
 
+        stage('Generate Code Coverage Report') {
+            when {
+                expression { params.EXECUTE_JACOCO == 'Yes' }
+            }
+            steps {
+                 sh 'mvn clean verify -Djacoco.agent.version=0.8.7 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
+            }
+        }
 
+/*
         stage('JaCoCo Report') {
             steps {
                 // Generar reporte de JaCoCo usando el archivo de ejecución
@@ -83,7 +85,7 @@ pipeline {
                 }
             }
         }
-/*
+
         stage('Dependency Analysis') {
             steps {
                 // Run the OWASP Dependency-Check plugin
