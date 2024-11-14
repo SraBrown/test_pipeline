@@ -22,6 +22,7 @@ pipeline {
         SONAR_PROJECT_VERSION = '1.0'
         TOKEN_SONAR ='c3F1XzY1YzE5MWMwNjkzM2IxYzNhZDNjZjdmZmY5YTdiNTk5NTRmNjdhMDA='
         JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
+         IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
     }
     stages {
         stage('Checkout') {
