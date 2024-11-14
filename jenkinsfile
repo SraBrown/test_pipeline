@@ -14,6 +14,8 @@ pipeline {
         choice(name: 'EXECUTE_SONAR', choices: ['Yes', 'No'], description: 'Execute SONAR?')
         choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
         string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
+        choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'GENERATE DOCKER_IMAGEN?')
+        string(name: 'GITLAB_CREDENTIALS', defaultValue: 'INT-GIT-JENKINS', description: 'Name Token')
     }
     environment {
         SONARQUBE_SERVER = 'SonarQube' // Name of the SonarQube server in Jenkins
@@ -98,8 +100,19 @@ pipeline {
             }
         }
 
-    /*
-        stage('Quality Gate') {
+         stage('Create Docker Imagen') {
+             when {
+                        expression { params.DOCKER_IMAGEN == 'Yes' }
+                   }
+                      steps {
+                                script {
+                                    docker.build(IMAGE_NAME)
+                                       }
+                            }
+                     }
+
+        /*
+          stage('Quality Gate') {
                 when {
                         expression { params.EXECUTE_SONAR == 'Yes' }
                     }
@@ -111,8 +124,8 @@ pipeline {
                             }
                         }
                     }
-        }
-    */    
+                }
+        */
     stage('Archive') {
             steps {
                 // Archive the JAR file (adjust the path to your output file as necessary)
