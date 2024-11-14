@@ -15,7 +15,7 @@ pipeline {
         choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
         string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
         choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'GENERATE DOCKER_IMAGEN?')
-        string(name: 'GITLAB_CREDENTIALS', defaultValue: 'INT-GIT-JENKINS', description: 'Name Token')
+      
     }
     environment {
         SONARQUBE_SERVER = 'SonarQube' // Name of the SonarQube server in Jenkins
@@ -106,7 +106,7 @@ pipeline {
                    }
                       steps {
                                 script {
-                                    docker.build(IMAGE_NAME)
+                                    docker.build(${DOCKER_IMAGEN})
                                        }
                             }
                      }
