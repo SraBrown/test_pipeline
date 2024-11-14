@@ -101,7 +101,7 @@ pipeline {
         }
         stage('Create Docker Imagen') {
              when {
-                        expression { params.DOCKER_IMAGEN == 'Yes' }
+                        expression { params.GENERATE_DOCKER == 'Yes' }
                    }
                       steps {
                                 script {
