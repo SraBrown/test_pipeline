@@ -93,6 +93,13 @@ pipeline {
                 }
             }
         }
+
+         stage('Create Imagen Docker') {
+                 steps {
+                        sh "./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=dev.opentrends.net/A4012/spring-cloud-config:latest"
+                   }
+         }
+
         */
 
         stage('SonarQube Analysis') {
