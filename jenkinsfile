@@ -110,7 +110,7 @@ pipeline {
                 }
             }
         }
-/*
+
   stage('Quality Gate') {
         when {
                 expression { params.EXECUTE_SONAR == 'Yes' }
@@ -124,7 +124,7 @@ pipeline {
                 }
             }
         }
-*/
+
     stage('Archive') {
             steps {
                 // Archive the JAR file (adjust the path to your output file as necessary)
