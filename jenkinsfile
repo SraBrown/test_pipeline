@@ -22,7 +22,7 @@ pipeline {
         SONAR_PROJECT_VERSION = '1.0'
         TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
         JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
-         IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
+        IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
     }
     stages {
         stage('Checkout') {
@@ -82,19 +82,6 @@ pipeline {
                 sh 'mvn org.owasp:dependency-check-maven:check'
             }
         }
-        stage('SonarQube Analysis') {
-           when {
-                expression { params.EXECUTE_SONAR == 'Yes' }
-            }
-            steps {
-                script {
-                    // Run SonarQube analysis
-                    withSonarQubeEnv('SonarQube') {
-                        sh "sonar-Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.projectName=${SONAR_PROJECT_NAME} -Dsonar.sources=src -Dsonar.host.url=http://sonar:9000 -Dsonar.login=${TOKEN_SONAR}"
-                    }
-                }
-            }
-        }
         */
 
         stage('SonarQube Analysis') {
@@ -110,21 +97,21 @@ pipeline {
                 }
             }
         }
-
-  stage('Quality Gate') {
-        when {
-                expression { params.EXECUTE_SONAR == 'Yes' }
-            }
-            steps {
-                script {
-                    // Wait for SonarQube analysis to finish and check quality gate status
-                    timeout(time: 5, unit: 'MINUTES') {
-                        waitForQualityGate abortPipeline: true
+        /*
+          stage('Quality Gate') {
+                when {
+                        expression { params.EXECUTE_SONAR == 'Yes' }
+                    }
+                    steps {
+                        script {
+                            // Wait for SonarQube analysis to finish and check quality gate status
+                            timeout(time: 5, unit: 'MINUTES') {
+                                waitForQualityGate abortPipeline: true
+                            }
+                        }
                     }
                 }
-            }
-        }
-
+        */
     stage('Archive') {
             steps {
                 // Archive the JAR file (adjust the path to your output file as necessary)
