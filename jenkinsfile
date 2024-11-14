@@ -97,7 +97,7 @@ pipeline {
         }
         */
 
-        stage('SonarQube Analysis') {
+       stage('SonarQube Analysis') {
             when {
                       expression { params.EXECUTE_SONAR == 'Yes' }
                     }
@@ -105,8 +105,8 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                    sh "mvn clean verify sonar:sonar \
                          -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                         -Dsonar.host.url=http://localhost:9000 \
-                         -Dsonar.login=squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00"
+                         -Dsonar.host.url=http://sonar:9000 \
+                         -Dsonar.login='token_sonar'"
                 }
             }
         }
