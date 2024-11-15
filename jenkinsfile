@@ -1,8 +1,8 @@
-pipeline {
+ppipeline {
     agent any
     tools {
        maven 'Maven Apache'
-       
+         'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '18.09'
     }
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
