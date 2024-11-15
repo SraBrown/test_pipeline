@@ -15,10 +15,10 @@ pipeline {
             choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
             string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
             choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'GENERATE DOCKER_IMAGEN?')
-            string(name: 'SONARQUBE_SERVER', defaultValue: 'SonarQube', description: 'Branch Specifier')
+            string(name: 'SONARQUBE_SERVER', defaultValue: 'SonarQube', description: 'Name of the SonarQube server in Jenkins')
         }
         environment {
-            SONARQUBE_SERVER = ${params.SONARQUBE_SERVER} // Name of the SonarQube server in Jenkins
+            SONARQUBE_SERVER = "${params.SONARQUBE_SERVER}2 // Name of the SonarQube server in Jenkins
             SONAR_PROJECT_KEY = 'ASSDA11'
             SONAR_PROJECT_NAME = 'ASSDA11'
             SONAR_PROJECT_VERSION = '1.0'
