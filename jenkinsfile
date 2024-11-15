@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
        maven 'Maven Apache'
-
+       docker 'Docker'
     }
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
@@ -26,7 +26,7 @@ pipeline {
 
         JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
         IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
-        DOCKER_CERT_PATH = credentials('Docker')
+        //DOCKER_CERT_PATH = credentials('Docker')
     }
     stages {
         stage('Checkout') {
@@ -107,9 +107,9 @@ pipeline {
                       expression { params.GENERATE_DOCKER == 'Yes' }
                    }
                       steps {
-                              
+                               sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
                                script {
-                                 sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
+
                                 /*
                                     ./mvnw spring-boot:build-image
                                     1.0.0 docker-a4012.opentrends.net/scc:latest
