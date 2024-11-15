@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
        maven 'Maven Apache'
-         'org.jenkinsci.plugins.docker.commons.tools.Docker'
+        
     }
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
