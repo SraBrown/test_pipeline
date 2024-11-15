@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        maven 'Maven Apache'
+       maven 'Maven Apache'
 
     }
     parameters {
@@ -23,8 +23,10 @@ pipeline {
         SONAR_PROJECT_NAME = 'ASSDA'
         SONAR_PROJECT_VERSION = '1.0'
         TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
+
         JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
-        DOCKER_IMAGE = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
+        IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
+        DOCKER_CERT_PATH = credentials('Docker')
     }
     stages {
         stage('Checkout') {
@@ -65,7 +67,7 @@ pipeline {
 
                             // Verifica que los archivos se hayan descargado
                             sh "ls -l ${jacocoPath}"
-                            //sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
+                            sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
                             //sh 'mvn ${jacocoPath}:report'
                                sh '''
                                                     java -jar ${jacocoPath}/jacococli.jar report jacoco.exec \
@@ -99,14 +101,23 @@ pipeline {
                 }
             }
         }
-           stage('Create Docker Imagen') {
+
+         stage('Create Docker Imagen') {
              when {
                       expression { params.GENERATE_DOCKER == 'Yes' }
                    }
                       steps {
-                                script {
+                               sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
+                               script {
+
+                                /*
+                                    ./mvnw spring-boot:build-image
+                                    1.0.0 docker-a4012.opentrends.net/scc:latest
+                                    docker-a4012.opentrends.net
+                                    docker-a4012.opentrends.net/scc:latest
                                     docker.build(${DOCKER_IMAGEN})
-                                       }
+                                    */
+                                  }
                             }
                      }
 
