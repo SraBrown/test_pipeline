@@ -1,136 +1,138 @@
 pipeline {
-    agent any
-    tools {
-       maven 'Maven Apache'
-      
-    }
-    parameters {
-        choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
-        booleanParam(name: 'EXECUTE_JAR', defaultValue: true, description: 'Enable JAR')
-        //string(name: 'URL_GIT', defaultValue: 'https://github.com/your-repo/your-project.git', description: 'Branch Specifier')
-        string(name: 'URL_GIT', defaultValue: 'https://github.com/SraBrown/test_pipeline.git', description: 'Branch Specifier')
-        string(name: 'BRANCH', defaultValue: 'develop', description: 'Branch Specifier')
-        string(name: 'GITLAB_CREDENTIALS', defaultValue: 'INT-GIT-JENKINS', description: 'Name Token')
-        choice(name: 'EXECUTE_SONAR', choices: ['Yes', 'No'], description: 'Execute SONAR?')
-        choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
-        string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
-        choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'GENERATE DOCKER_IMAGEN?')
-
-    }
-    environment {
-        SONARQUBE_SERVER = 'SonarQube' // Name of the SonarQube server in Jenkins
-        SONAR_PROJECT_KEY = 'ASSDA'
-        SONAR_PROJECT_NAME = 'ASSDA'
-        SONAR_PROJECT_VERSION = '1.0'
-        TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
-        JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
-        IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
-        DOCKER_CERT_PATH = credentials('Docker')
-    }
-    stages {
-        stage('Checkout') {
-            steps {
-                echo 'Checkout the JAR!'
-                checkout scmGit(branches: [[name: '$BRANCH']], extensions: [], userRemoteConfigs:
-                        [[credentialsId: "${params.GITLAB_CREDENTIALS}", url: "${params.URL_GIT}"]])
-
-            }
+        agent any
+        tools {
+           maven 'Maven Apache'
+             'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '18.09'
         }
-       stage('Build and Install') {
-                steps {
-                    script {
-                        if (params.EXECUTE_JAR) {
-                            echo 'Starting Build ,params.EXECUTE_JAR=true!'
-                            sh 'mvn clean package -DskipTests'
-                        }
-                    }
-                }
-            }
-
-        stage('Prepare Jacoco') {
-            when {
-                            expression { params.EXECUTE_JACOCO == 'Yes' }
-                        }
+        parameters {
+            choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
+            booleanParam(name: 'EXECUTE_JAR', defaultValue: true, description: 'Enable JAR')
+            //string(name: 'URL_GIT', defaultValue: 'https://github.com/your-repo/your-project.git', description: 'Branch Specifier')
+            string(name: 'URL_GIT', defaultValue: 'https://github.com/SraBrown/test_pipeline.git', description: 'Branch Specifier')
+            string(name: 'BRANCH', defaultValue: 'develop', description: 'Branch Specifier')
+            string(name: 'GITLAB_CREDENTIALS', defaultValue: 'INT-GIT-JENKINS', description: 'Name Token')
+            choice(name: 'EXECUTE_SONAR', choices: ['Yes', 'No'], description: 'Execute SONAR?')
+            choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
+            string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
+            choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'GENERATE DOCKER_IMAGEN?')
+    
+        }
+        environment {
+            SONARQUBE_SERVER = 'SonarQube' // Name of the SonarQube server in Jenkins
+            SONAR_PROJECT_KEY = 'ASSDA'
+            SONAR_PROJECT_NAME = 'ASSDA'
+            SONAR_PROJECT_VERSION = '1.0'
+            TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
+    
+            JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
+            IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
+            DOCKER_CERT_PATH = credentials('Docker')
+        }
+            stages {
+                stage('Checkout') {
                     steps {
-                        script {
-                        echo 'Iniciar descarga de jacoco'
-                            // Ruta donde se almacenarán los JARs
-                            def jacocoPath = "${env.WORKSPACE}/jacoco"
-                            // Crea el directorio si no existe
-                            sh "mkdir -p ${jacocoPath}"
-                            // Descarga jacocoagent.jar y jacococli.jar
-                            sh """
-                                curl -L -o ${jacocoPath}/jacocoagent.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/0.8.8/org.jacoco.agent-0.8.8-runtime.jar
-                                curl -L -o ${jacocoPath}/jacococli.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/0.8.8/org.jacoco.cli-0.8.8-nodeps.jar
-                            """
-
-                            // Verifica que los archivos se hayan descargado
-                            sh "ls -l ${jacocoPath}"
-                            sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
-                            //sh 'mvn ${jacocoPath}:report'
-                               sh '''
-                                                    java -jar ${jacocoPath}/jacococli.jar report jacoco.exec \
-                                                    --classfiles target/classes \
-                                                    --sourcefiles src/main/java \
-                                                    --html target/jacoco-report
-                                                    '''
-                        }
+                        echo 'Checkout the JAR!'
+                        checkout scmGit(branches: [[name: '$BRANCH']], extensions: [], userRemoteConfigs:
+                                [[credentialsId: "${params.GITLAB_CREDENTIALS}", url: "${params.URL_GIT}"]])
+        
                     }
                 }
-
-        /*
-        stage('Dependency Analysis') {
-            steps {
-                // Run the OWASP Dependency-Check plugin
-                sh 'mvn org.owasp:dependency-check-maven:check'
-            }
-        }
-        */
-
-        stage('SonarQube Analysis') {
-            when {
-                      expression { params.EXECUTE_SONAR == 'Yes' }
-                    }
-          steps {
-                withSonarQubeEnv('SonarQube') {
-                   sh "mvn clean verify sonar:sonar \
-                         -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                         -Dsonar.host.url=http://sonar:9000 \
-                         -Dsonar.login=${TOKEN_SONAR}"
-                }
-            }
-        }
-
-         stage('Create Docker Imagen') {
-             when {
-                      expression { params.GENERATE_DOCKER == 'Yes' }
-                   }
-                      steps {
-                               sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
-                    }
-                            
-           }
-
-        /*
-          stage('Quality Gate') {
-                when {
-                        expression { params.EXECUTE_SONAR == 'Yes' }
-                    }
-                    steps {
-                        script {
-                            // Wait for SonarQube analysis to finish and check quality gate status
-                            timeout(time: 5, unit: 'MINUTES') {
-                                waitForQualityGate abortPipeline: true
+               stage('Build and Install') {
+                        steps {
+                            script {
+                                if (params.EXECUTE_JAR) {
+                                    echo 'Starting Build ,params.EXECUTE_JAR=true!'
+                                    sh 'mvn clean package -DskipTests'
+                                }
                             }
                         }
                     }
+    
+            stage('Prepare Jacoco') {
+                when {
+                                expression { params.EXECUTE_JACOCO == 'Yes' }
+                            }
+                        steps {
+                            script {
+                            echo 'Iniciar descarga de jacoco'
+                                // Ruta donde se almacenarán los JARs
+                                def jacocoPath = "${env.WORKSPACE}/jacoco"
+                                // Crea el directorio si no existe
+                                sh "mkdir -p ${jacocoPath}"
+                                // Descarga jacocoagent.jar y jacococli.jar
+                                sh """
+                                    curl -L -o ${jacocoPath}/jacocoagent.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/0.8.8/org.jacoco.agent-0.8.8-runtime.jar
+                                    curl -L -o ${jacocoPath}/jacococli.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/0.8.8/org.jacoco.cli-0.8.8-nodeps.jar
+                                """
+    
+                                // Verifica que los archivos se hayan descargado
+                                sh "ls -l ${jacocoPath}"
+                                sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
+                                //sh 'mvn ${jacocoPath}:report'
+                                   sh '''
+                                                        java -jar ${jacocoPath}/jacococli.jar report jacoco.exec \
+                                                        --classfiles target/classes \
+                                                        --sourcefiles src/main/java \
+                                                        --html target/jacoco-report
+                                                        '''
+                            }
+                        }
+                    }
+    
+            /*
+            stage('Dependency Analysis') {
+                steps {
+                    // Run the OWASP Dependency-Check plugin
+                    sh 'mvn org.owasp:dependency-check-maven:check'
                 }
-        */
-    stage('Archive') {
-            steps {
-                // Archive the JAR file (adjust the path to your output file as necessary)
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            }
+            */
+    
+            stage('SonarQube Analysis') {
+                when {
+                          expression { params.EXECUTE_SONAR == 'Yes' }
+                        }
+              steps {
+                    withSonarQubeEnv('SonarQube') {
+                       sh "mvn clean verify sonar:sonar \
+                             -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                             -Dsonar.host.url=http://sonar:9000 \
+                             -Dsonar.login=${TOKEN_SONAR}"
+                    }
+                }
+            }
+    
+             stage('Create Docker Imagen') {
+                 when {
+                          expression { params.GENERATE_DOCKER == 'Yes' }
+                       }
+                          steps {
+                                   sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
+    
+                                 }
+                              }
+             }
+    
+            /*
+              stage('Quality Gate') {
+                    when {
+                            expression { params.EXECUTE_SONAR == 'Yes' }
+                        }
+                        steps {
+                            script {
+                                // Wait for SonarQube analysis to finish and check quality gate status
+                                timeout(time: 5, unit: 'MINUTES') {
+                                    waitForQualityGate abortPipeline: true
+                                }
+                            }
+                        }
+                    }
+            */
+        stage('Archive') {
+                steps {
+                    // Archive the JAR file (adjust the path to your output file as necessary)
+                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                }
             }
         }
     }
-}
