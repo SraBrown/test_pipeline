@@ -15,7 +15,7 @@ pipeline {
             choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
             string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
             choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'GENERATE DOCKER_IMAGEN?')
-    
+            string(name: 'BRANCH', defaultValue: 'develop', description: 'Branch Specifier')
         }
         environment {
             SONARQUBE_SERVER = 'SonarQube' // Name of the SonarQube server in Jenkins
@@ -94,6 +94,8 @@ pipeline {
                     withSonarQubeEnv('SonarQube') {
                        sh "mvn clean verify sonar:sonar \
                              -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                             -Dsonar.projectName=${SONAR_PROJECT_NAME} \
+                             -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} \
                              -Dsonar.host.url=${SONAR_HOST} \
                              -Dsonar.login=${TOKEN_SONAR}"
                     }
