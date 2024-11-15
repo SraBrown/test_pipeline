@@ -26,7 +26,7 @@ pipeline {
     
             JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
             IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
-            DOCKER_CERT_PATH = credentials('Docker')
+          
         }
             stages {
                 stage('Checkout') {
