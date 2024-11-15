@@ -18,7 +18,7 @@ pipeline {
             string(name: 'SONARQUBE_SERVER', defaultValue: 'SonarQube', description: 'Name of the SonarQube server in Jenkins')
         }
         environment {
-            SONARQUBE_SERVER = "${params.SONARQUBE_SERVER}2 // Name of the SonarQube server in Jenkins
+            SONARQUBE_SERVER = "${params.SONARQUBE_SERVER}" // Name of the SonarQube server in Jenkins
             SONAR_PROJECT_KEY = 'ASSDA11'
             SONAR_PROJECT_NAME = 'ASSDA11'
             SONAR_PROJECT_VERSION = '1.0'
