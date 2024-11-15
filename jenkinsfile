@@ -2,7 +2,7 @@ ppipeline {
     agent any
     tools {
        maven 'Maven Apache'
-         'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '18.09'
+       
     }
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
@@ -26,7 +26,7 @@ ppipeline {
         TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
         JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
         IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
-        DOCKER_CERT_PATH = credentials('Docker')
+        
     }
     stages {
         stage('Checkout') {
