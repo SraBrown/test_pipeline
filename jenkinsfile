@@ -38,6 +38,8 @@ pipeline {
                         echo 'Checkout the JAR!'
                         checkout scmGit(branches: [[name: '$BRANCH']], extensions: [], userRemoteConfigs:
                                 [[credentialsId: "${params.GITLAB_CREDENTIALS}", url: "${params.URL_GIT}"]])
+
+                                
         
                     }
                 }
@@ -50,6 +52,14 @@ pipeline {
                               def jarFile =  sh(script: "ls target/*.jar", returnStdout: true).trim()
                               NAME_ARTEFACT = jarFile
                               echo "Artifact generated: ${NAME_ARTEFACT}"
+                              // Extraer artifactId y version
+                    
+                            def pom = readMavenPom file: 'pom.xml'
+
+                    // Extraer artifactId y version
+                    def artifactId = pom.artifactId
+                    def version = pom.version    
+
                             }
                         }
                     }
@@ -108,37 +118,6 @@ pipeline {
                     }
                 }
 
-	    stage('Create and push Docker Imagen/Registry') {
-                   if {params.GENERATE_DOCKER == 'Yes' }{
-                               
-                                           sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
-                                           // Loguearse en el registro de Docker (si es necesario)
-                                           // sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
-
-                                           // Etiquetar la imagen
-                                           sh "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
-
-                                           // Subir la imagen al registro Docker
-                                           sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
-                                      
-                                      }else {
-                                        stage('Push to Git Repository') {
-                                        steps {
-                                            script {
-                                                // Inicializar git, añadir el archivo JAR y hacer push
-                                                sh '''
-                                                    git init
-                                                    git remote add origin ${REPO_URL}
-                                                    git checkout -b artifacts-branch
-                                                    git add target/${NAME_ARTEFACT}.jar
-                                                    git commit -m "Add artifact ${NAME_ARTEFACT}.jar"
-                                                    git push -u origin artifacts-branch
-                                                '''
-                                            }
-                                        }
-                             }
-                    }
-            }	
 
 
       }
