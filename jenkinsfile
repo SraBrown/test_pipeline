@@ -43,10 +43,7 @@ pipeline {
                             script {
                               echo 'Starting Build ,params.EXECUTE_JAR=true!'
                               sh 'mvn clean package -DskipTests'
-                              // Obtener el nombre del archivo JAR generado
-                              //def jarFile =  sh(script: "ls target/*.jar", returnStdout: true).trim()
-                              //NAME_ARTEFACT = jarFile
-                              //echo "Artifact generated: ${NAME_ARTEFACT}"
+           
                             }
                         }
                     }
@@ -113,31 +110,7 @@ pipeline {
                     }
                     }
                 }
-            }
 
-            stage('Archive') {
-                            steps {
-                                // Archive the JAR file (adjust the path to your output file as necessary)
-                                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-                            }
-            }
-
-            stage('Create and push Docker Imagen/Registry') {
-                    when {
-                             expression {params.GENERATE_DOCKER == 'Yes' }
-                                      }
-                                steps {
-                                           sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
-                                           // Loguearse en el registro de Docker (si es necesario)
-                                           // sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
-
-                                           // Etiquetar la imagen
-                                           sh "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
-
-                                           // Subir la imagen al registro Docker
-                                           sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
-                                      }
-            }
-
+           }
         }
     }
