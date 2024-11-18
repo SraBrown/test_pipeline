@@ -24,7 +24,7 @@ pipeline {
         environment {
             SONARQUBE_SERVER = "${params.SONARQUBE_SERVER}" // Name of the SonarQube server in Jenkins
             SONAR_PROJECT_VERSION = "${params.SONAR_PROJECT_VERSION}"
-	    SONAR_PROJECT_KEY = "${params.SONAR_PROJECT_KEY}"
+	        SONAR_PROJECT_KEY = "${params.SONAR_PROJECT_KEY}"
             SONAR_HOST = "${params.SONAR_LOCALHOST}"
             TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
             JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
@@ -109,9 +109,8 @@ pipeline {
                 }
 
 	    stage('Create and push Docker Imagen/Registry') {
-                    when {
-                             expression {params.GENERATE_DOCKER == 'Yes' }
-                                      }
+                   if {params.GENERATE_DOCKER == 'Yes' }
+                                      
                                 steps {
                                            sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
                                            // Loguearse en el registro de Docker (si es necesario)
@@ -122,11 +121,27 @@ pipeline {
 
                                            // Subir la imagen al registro Docker
                                            sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
-                                      }
+                                      }else {
+                                        stage('Push to Git Repository') {
+                                        steps {
+                                            script {
+                                                // Inicializar git, añadir el archivo JAR y hacer push
+                                                sh '''
+                                                    git init
+                                                    git remote add origin ${REPO_URL}
+                                                    git checkout -b artifacts-branch
+                                                    git add target/${ARTIFACT_NAME}.jar
+                                                    git commit -m "Add artifact ${ARTIFACT_NAME}.jar"
+                                                    git push -u origin artifacts-branch
+                                                '''
+                                            }
+                                        }
+                             }
+                    }
             }	
 
 
-            }
+      }
 
 
 
