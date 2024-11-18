@@ -22,15 +22,15 @@ pipeline {
             string(name: 'SONAR_LOCALHOST', defaultValue: 'http://sonar:9000', description: 'Sonar Localhost')
         }
         environment {
-            SONARQUBE_SERVER = ${params.SONARQUBE_SERVER} // Name of the SonarQube server in Jenkins
-            SONAR_PROJECT_KEY = ${params.SONAR_PROJECT_KEY}
-            SONAR_PROJECT_NAME = ${params.SONAR_PROJECT_NAME}
-            SONAR_PROJECT_VERSION = ${params.SONAR_PROJECT_VERSION}
+            SONARQUBE_SERVER = "${params.SONARQUBE_SERVER}" // Name of the SonarQube server in Jenkins
+            SONAR_PROJECT_KEY = "${params.SONAR_PROJECT_KEY}"
+            SONAR_PROJECT_NAME = "${params.SONAR_PROJECT_NAME}"
+            SONAR_PROJECT_VERSION = "${params.SONAR_PROJECT_VERSION}"
             TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
-            SONAR_HOST = ${params.SONAR_LOCALHOST}
+            SONAR_HOST = "${params.SONAR_LOCALHOST}"
             JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
             DOCKER_IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
-            NAME_JAR=''
+            NAME_JAR=""
             DOCKER_REGISTRY = 'localhost:5000' // Cambia si tienes un registro diferente
 
         }
