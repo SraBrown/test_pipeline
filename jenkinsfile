@@ -28,7 +28,7 @@ pipeline {
             DOCKER_IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
             NAME_ARTEFACT = ''
             DOCKER_REGISTRY = 'localhost:5000' // Cambia si tienes un registro diferente
-            }
+        }
             stages {
                 stage('Checkout') {
                     steps {
@@ -43,7 +43,11 @@ pipeline {
                             script {
                               echo 'Starting Build ,params.EXECUTE_JAR=true!'
                               sh 'mvn clean package -DskipTests'
-                               }
+                              // Obtener el nombre del archivo JAR generado
+                              //def jarFile =  sh(script: "ls target/*.jar", returnStdout: true).trim()
+                              //NAME_ARTEFACT = jarFile
+                              //echo "Artifact generated: ${NAME_ARTEFACT}"
+                            }
                         }
                     }
     
@@ -78,14 +82,29 @@ pipeline {
                         }
                     }
     
+            /*
+            stage('Dependency Analysis') {
+                steps {
+                    // Run the OWASP Dependency-Check plugin
+                    sh 'mvn org.owasp:dependency-check-maven:check'
+                }
+            }
+            */
+    
             stage('SonarQube Analysis') {
                 when {
                           expression { params.EXECUTE_SONAR == 'Yes' }
                         }
               steps {
                     script {
-        withSonarQubeEnv('SonarQube') {
-                        sh "mvn clean verify sonar:sonar \
+
+                    //def jarFilterName = NAME_ARTEFACT.replaceAll('[[^a-zA-Z0-9]/.-]', '_')
+                    //def artifact1 = NAME_ARTEFACT.split('.jar')
+                      //echo "Nombre del Artifact: ${artifact1}"
+                    //def jarFilterName = NAME_ARTEFACT.tokenize('/').last().replaceAll(/[^a-zA-Z0-9_]/, '') - '.jar'
+                    //echo "Nombre del Artifact: ${jarFilterName}"
+                    withSonarQubeEnv('SonarQube') {
+                       sh "mvn clean verify sonar:sonar \
                              -Dsonar.projectKey= ASSDA \
                              -Dsonar.projectName= ASSDA \
                              -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} \
@@ -98,22 +117,7 @@ pipeline {
 
 
 
-            stage('Create and push Docker Imagen/Registry') {
-                    when {
-                             expression {params.GENERATE_DOCKER == 'Yes' }
-                                      }
-                                steps {
-                                           sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
-                                           // Loguearse en el registro de Docker (si es necesario)
-                                           // sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
-
-                                           // Etiquetar la imagen
-                                           sh "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
-
-                                           // Subir la imagen al registro Docker
-                                           sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
-                                      }
-            }
+          
 
         }
     }
