@@ -99,8 +99,8 @@ pipeline {
               steps {
                     script {
 
-                    //def jarFilterName = NAME_ARTEFACT.replaceAll('[[^a-zA-Z0-9]/.-]', '_')
-                    def jarFilterName = NAME_ARTEFACT.tokenize('/').last().replaceAll(/[^a-zA-Z0-9_]/, '') - '.jar'
+                    def jarFilterName = NAME_ARTEFACT.replaceAll('[[^a-zA-Z0-9]/.-]', '_')
+                    //def jarFilterName = NAME_ARTEFACT.tokenize('/').last().replaceAll(/[^a-zA-Z0-9_]/, '') - '.jar'
                     echo "Nombre del Artifact: ${jarFilterName}"
                     withSonarQubeEnv('SonarQube') {
                        sh "mvn clean verify sonar:sonar \
@@ -121,7 +121,7 @@ pipeline {
                             }
             }
 
-              stage('Create and push Docker Imagen/Registry') {
+            stage('Create and push Docker Imagen/Registry') {
                     when {
                              expression {params.GENERATE_DOCKER == 'Yes' }
                                       }
@@ -136,7 +136,7 @@ pipeline {
                                            // Subir la imagen al registro Docker
                                            sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
                                       }
-              }
+            }
 
         }
     }
