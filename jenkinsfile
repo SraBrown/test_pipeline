@@ -101,6 +101,7 @@ pipeline {
                         }
               steps {
                     script {
+                     echo "Artifact Sonar: ${NAME_ARTEFACT}"
                     def jarSonar = NAME_ARTEFACT.trim()
                     withSonarQubeEnv('SonarQube') {
                        sh "mvn clean verify sonar:sonar \
