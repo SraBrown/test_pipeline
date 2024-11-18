@@ -139,10 +139,10 @@ pipeline {
 				                    // Inicializar git, añadir el archivo JAR y hacer push
 				                    sh '''
 				                        git init
-				                        git remote add origin ${REPO_URL}
+				                        git remote add origin ${params.URL_GIT}
 				                        git checkout -b artifacts-branch
-				                        git add target/${ARTIFACT_NAME}.jar
-				                        git commit -m "Add artifact ${ARTIFACT_NAME}.jar"
+				                        git add target/${NAME_ARTEFACT }.jar
+				                        git commit -m "Add artifact ${NAME_ARTEFACT }.jar"
 				                        git push -u origin artifacts-branch
 				                    '''
 				                }
