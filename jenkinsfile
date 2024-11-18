@@ -30,7 +30,7 @@ pipeline {
             SONAR_HOST = "${params.SONAR_LOCALHOST}"
             JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
             DOCKER_IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
-            NAME_ARTEFACT=""
+            NAME_ARTEFACT=''
             DOCKER_REGISTRY = 'localhost:5000' // Cambia si tienes un registro diferente
 
         }
