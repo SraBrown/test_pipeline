@@ -98,7 +98,7 @@ pipeline {
               steps {
                     script {
 
-                    def jarFilterName = NAME_ARTEFACT.replaceAll('[[^a-zA-Z0-9]/.-]', '')
+                    def jarFilterName = NAME_ARTEFACT.replaceAll('[[^a-zA-Z0-9]/.-]', '_')
                     echo "Nombre del Artifact: ${jarFilterName}"
                     withSonarQubeEnv('SonarQube') {
                        sh "mvn clean verify sonar:sonar \
