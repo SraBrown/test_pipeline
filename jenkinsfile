@@ -106,8 +106,8 @@ pipeline {
                      echo "Nombre del Artifact: ${filteredName}"
                     withSonarQubeEnv('SonarQube') {
                        sh "mvn clean verify sonar:sonar \
-                             -Dsonar.projectKey= ${filteredName} \
-                             -Dsonar.projectName= ${filteredName} \
+                             -Dsonar.projectKey= ${jarFilterName} \
+                             -Dsonar.projectName= ${jarFilterName} \
                              -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} \
                              -Dsonar.host.url=${SONAR_HOST} \
                              -Dsonar.login=${TOKEN_SONAR}"
