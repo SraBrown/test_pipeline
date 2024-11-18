@@ -100,7 +100,7 @@ pipeline {
                           expression { params.EXECUTE_SONAR == 'Yes' }
                         }
               steps {
-              
+                    script {
                     def jarSonar = NAME_ARTEFACT.trim()
                     withSonarQubeEnv('SonarQube') {
                        sh "mvn clean verify sonar:sonar \
@@ -109,6 +109,7 @@ pipeline {
                              -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} \
                              -Dsonar.host.url=${SONAR_HOST} \
                              -Dsonar.login=${TOKEN_SONAR}"
+                    }
                     }
                 }
             }
