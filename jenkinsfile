@@ -45,6 +45,11 @@ pipeline {
                 }
                stage('Build and Install') {
                         steps {
+                            def pom = readMavenPom file: 'pom.xml'
+
+                            // Extraer artifactId y version
+                            def artifactId = pom.artifactId
+                            def version = pom.version    
                             script {
                               echo 'Starting Build ,params.EXECUTE_JAR=true!'
                               sh 'mvn clean package -DskipTests'
@@ -54,13 +59,7 @@ pipeline {
                               echo "Artifact generated: ${NAME_ARTEFACT}"
                               // Extraer artifactId y version
                     
-                            def pom = readMavenPom file: 'pom.xml'
-
-                    // Extraer artifactId y version
-                    def artifactId = pom.artifactId
-                    def version = pom.version    
-
-                            }
+                        }
                         }
                     }
     
