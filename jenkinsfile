@@ -35,17 +35,12 @@ pipeline {
         }
             stages {
 
-                
-
-
                 stage('Checkout') {
                     steps {
                         echo 'Checkout the JAR!'
                         checkout scmGit(branches: [[name: '$BRANCH']], extensions: [], userRemoteConfigs:
                                 [[credentialsId: "${params.GITLAB_CREDENTIALS}", url: "${params.URL_GIT}"]])
 
-                                
-        
                     }
                 }
 
@@ -54,8 +49,8 @@ pipeline {
                     steps {
                         script {
                             def pom = readMavenPom file: 'pom.xml'
-                            ARTIFACT_NAME = pom.artifactId
-                            echo "Artifact Name: ${ARTIFACT_NAME}"
+                            NAME_ARTEFACT = pom.artifactId
+                            echo "Artifact Name: ${NAME_ARTEFACT}"
                         }
             }
         }     
@@ -64,12 +59,6 @@ pipeline {
                 
                         steps {
                            script {
-
-                               def pom = readMavenPom file: 'pom.xml'
-
-                            // Extraer artifactId y version
-                            def artifactId = pom.artifactId
-                            def version = pom.version      
 
                               echo 'Starting Build ,params.EXECUTE_JAR=true!'
                               sh 'mvn clean package -DskipTests'
@@ -155,8 +144,5 @@ pipeline {
 				}                    
 			}
             }	
-
-
-
-      }
+}
 }
