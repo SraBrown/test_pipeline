@@ -30,9 +30,12 @@ pipeline {
             JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
             DOCKER_IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
             NAME_ARTEFACT = ''
+            ARTIFACT_NAME = ''
             DOCKER_REGISTRY = 'localhost:5000' // Cambia si tienes un registro diferente
         }
             stages {
+
+                
 
 
                 stage('Checkout') {
@@ -45,6 +48,18 @@ pipeline {
         
                     }
                 }
+
+
+               stage('Extract Artifact Name') {
+                    steps {
+                        script {
+                            def pom = readMavenPom file: 'pom.xml'
+                            ARTIFACT_NAME = pom.artifactId
+                            echo "Artifact Name: ${ARTIFACT_NAME}"
+                        }
+            }
+        }     
+
                stage('Build and Install') {
                 
                         steps {
