@@ -44,12 +44,9 @@ pipeline {
                               echo 'Starting Build ,params.EXECUTE_JAR=true!'
                               sh 'mvn clean package -DskipTests'
                               // Obtener el nombre del archivo JAR generado
-                              def jarFile = sh(script: "ls target/*.jar | head -n 1", returnStdout: true).trim()
                               //def jarFile =  sh(script: "ls target/*.jar", returnStdout: true).trim()
-
-                               def artifactName = jarFile.split('/')[-1].replaceAll('[ .\\/]','')
-                                // Guardar el nombre limpio del artefacto en una variable local
-                              NAME_ARTEFACT = artifactName
+                               def artifactPath = sh(script: "find target -name '*.jar'", returnStdout: true).trim()
+                              NAME_ARTEFACT = jarFile
                               echo "Artifact generated: ${NAME_ARTEFACT}"
                             }
                         }
@@ -103,12 +100,12 @@ pipeline {
                     script {
 
                     //def jarFilterName = NAME_ARTEFACT.replaceAll('[[^a-zA-Z0-9]/.-]', '_')
-                    //def jarFilterName = NAME_ARTEFACT.tokenize('/').last().replaceAll(/[^a-zA-Z0-9_]/, '') - '.jar'
-                    //echo "Nombre del Artifact: ${jarFilterName}"
+                    def jarFilterName = NAME_ARTEFACT.tokenize('/').last().replaceAll(/[^a-zA-Z0-9_]/, '') - '.jar'
+                    echo "Nombre del Artifact: ${jarFilterName}"
                     withSonarQubeEnv('SonarQube') {
                        sh "mvn clean verify sonar:sonar \
-                             -Dsonar.projectKey= ${NAME_ARTEFACT} \
-                             -Dsonar.projectName= ${NAME_ARTEFACT} \
+                             -Dsonar.projectKey= ${jarFilterName} \
+                             -Dsonar.projectName= ${jarFilterName} \
                              -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} \
                              -Dsonar.host.url=${SONAR_HOST} \
                              -Dsonar.login=${TOKEN_SONAR}"
