@@ -107,7 +107,6 @@ pipeline {
                        sh "mvn clean verify sonar:sonar \
                              -Dsonar.projectKey= ASSDA \
                              -Dsonar.projectName= ASSDA \
-                             -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} \
                              -Dsonar.host.url=${SONAR_HOST} \
                              -Dsonar.login=${TOKEN_SONAR}"
                     }
