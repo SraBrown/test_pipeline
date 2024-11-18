@@ -1,8 +1,8 @@
 pipeline {
         agent any
         tools {
-           maven 'Maven Apache'
-           //maven 'Maven 3.0.1'
+           //maven 'Maven Apache'
+           maven 'Maven 3.0.1'
         }
         parameters {
             choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
@@ -22,7 +22,8 @@ pipeline {
             SONARQUBE_SERVER = "${params.SONARQUBE_SERVER}" // Name of the SonarQube server in Jenkins
             SONAR_PROJECT_VERSION = "${params.SONAR_PROJECT_VERSION}"
 	        SONAR_HOST = "${params.SONAR_LOCALHOST}"
-            TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
+            //TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
+            TOKEN_SONAR =token_sonar'
             JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
             DOCKER_IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
             NAME_ARTEFACT = ''
@@ -49,10 +50,10 @@ pipeline {
                             echo "Artifact Name: ${NAME_ARTEFACT}"
                         }
                     }
-                }     
+                }
 
                stage('Build and Install') {
-                
+
                         steps {
                            script {
 
@@ -63,7 +64,7 @@ pipeline {
                             }
                         }
                     }
-    
+
             stage('Prepare Jacoco') {
                 when {
                                 expression { params.EXECUTE_JACOCO == 'Yes' }
@@ -80,7 +81,7 @@ pipeline {
                                     curl -L -o ${jacocoPath}/jacocoagent.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/0.8.8/org.jacoco.agent-0.8.8-runtime.jar
                                     curl -L -o ${jacocoPath}/jacococli.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/0.8.8/org.jacoco.cli-0.8.8-nodeps.jar
                                 """
-    
+
                                 // Verifica que los archivos se hayan descargado
                                 sh "ls -l ${jacocoPath}"
                                 sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
@@ -94,7 +95,7 @@ pipeline {
                             }
                         }
                     }
-    
+
             /*
             stage('Dependency Analysis') {
                 steps {
@@ -103,7 +104,7 @@ pipeline {
                 }
             }
             */
-    
+
             stage('SonarQube Analysis') {
                 when {
                           expression { params.EXECUTE_SONAR == 'Yes' }
@@ -118,10 +119,10 @@ pipeline {
                     }
                 }
 
-	
+
             stage('Create and push Docker Imagen/Registry') {
                 steps {
-		  script{	
+		  script{
 			if (params.GENERATE_DOCKER == 'Yes'){
                     	sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
                                            // Loguearse en el registro de Docker (si es necesario)
@@ -133,8 +134,8 @@ pipeline {
                                            // Subir la imagen al registro Docker
                                            sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
                                            }
-				}                    
+				}
 			}
-            }	
+            }
 }
 }
