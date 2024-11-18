@@ -16,18 +16,14 @@ pipeline {
             string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
             choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'GENERATE DOCKER_IMAGEN?')
             string(name: 'SONARQUBE_SERVER', defaultValue: 'SonarQube', description: 'SONAR Server')
-            string(name: 'SONAR_PROJECT_KEY', defaultValue: 'ASSDA11', description: 'Sonar Project Key')
-            string(name: 'SONAR_PROJECT_NAME', defaultValue: 'ASSDA11', description: 'Sonar Project Name')
             string(name: 'SONAR_PROJECT_VERSION', defaultValue: '1.0', description: 'Sonar Project Name')
             string(name: 'SONAR_LOCALHOST', defaultValue: 'http://sonar:9000', description: 'Sonar Localhost')
         }
         environment {
             SONARQUBE_SERVER = "${params.SONARQUBE_SERVER}" // Name of the SonarQube server in Jenkins
-            SONAR_PROJECT_KEY = "${params.SONAR_PROJECT_KEY}"
-            SONAR_PROJECT_NAME = "${params.SONAR_PROJECT_NAME}"
             SONAR_PROJECT_VERSION = "${params.SONAR_PROJECT_VERSION}"
-            TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
             SONAR_HOST = "${params.SONAR_LOCALHOST}"
+            TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
             JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
             DOCKER_IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
             NAME_ARTEFACT = ''
@@ -102,7 +98,7 @@ pipeline {
               steps {
                     script {
 
-                    def jarFilterName = NAME_ARTEFACT.replaceAll(/[^a-zA-Z0-9.\-_]/, '')
+                    def jarFilterName = NAME_ARTEFACT.replaceAll(/[^a-zA-Z0-9.\-/._]/, '')
                      echo "Nombre del Artifact: ${jarFilterName}"
                     withSonarQubeEnv('SonarQube') {
                        sh "mvn clean verify sonar:sonar \
