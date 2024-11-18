@@ -110,15 +110,15 @@ pipeline {
                     }
                 }
             }
+
             
-            /*
             stage('Archive') {
                             steps {
                                 // Archive the JAR file (adjust the path to your output file as necessary)
-                                //archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-                                 archiveArtifacts artifacts: NAME_ARTIFACT
+                                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                                
                             }
-            }*/
+            }
 
               stage('Create and push Docker Imagen/Registry') {
                     when {
