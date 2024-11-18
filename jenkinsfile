@@ -101,12 +101,13 @@ pipeline {
                         }
               steps {
                     script {
-                     echo "Artifact Sonar: ${NAME_ARTEFACT}"
-                    def jarSonar = NAME_ARTEFACT.trim()
+
+                    def jarFilterName = NAME_ARTEFACT.replaceAll(/[^a-zA-Z0-9.\-_]/, '')
+                     echo "Nombre del Artifact: ${filteredName}"
                     withSonarQubeEnv('SonarQube') {
                        sh "mvn clean verify sonar:sonar \
-                             -Dsonar.projectKey=${NAME_ARTEFACT} \
-                             -Dsonar.projectName=${NAME_ARTEFACT} \
+                             -Dsonar.projectKey= ${filteredName} \
+                             -Dsonar.projectName= ${filteredName} \
                              -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} \
                              -Dsonar.host.url=${SONAR_HOST} \
                              -Dsonar.login=${TOKEN_SONAR}"
