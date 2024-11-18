@@ -108,12 +108,12 @@ pipeline {
                     }
                 }
             }
-            
+
             stage('Archive') {
                             steps {
                                 // Archive the JAR file (adjust the path to your output file as necessary)
                                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-                                echo artifacts
+                                echo 'ARTEFACTO JAR' artifacts
                             }
             }
 
@@ -151,6 +151,6 @@ pipeline {
                         }
                     }
             */
-        
+
         }
     }
