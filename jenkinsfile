@@ -98,8 +98,8 @@ pipeline {
               steps {
                     script {
 
-                    def jarFilterName = NAME_ARTEFACT.replaceAll('[./-]', '')
-                     echo "Nombre del Artifact: ${jarFilterName}"
+                    def jarFilterName = NAME_ARTEFACT.replaceAll('[/-]', '')
+                    echo "Nombre del Artifact: ${jarFilterName}"
                     withSonarQubeEnv('SonarQube') {
                        sh "mvn clean verify sonar:sonar \
                              -Dsonar.projectKey= ${jarFilterName} \
