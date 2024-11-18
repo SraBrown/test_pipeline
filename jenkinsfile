@@ -30,7 +30,7 @@ pipeline {
             SONAR_HOST = "${params.SONAR_LOCALHOST}"
             JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
             DOCKER_IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
-            NAME_JAR=""
+            NAME_ARTEFACT=""
             DOCKER_REGISTRY = 'localhost:5000' // Cambia si tienes un registro diferente
 
         }
@@ -48,7 +48,10 @@ pipeline {
                             script {
                               echo 'Starting Build ,params.EXECUTE_JAR=true!'
                               sh 'mvn clean package -DskipTests'
-
+                              // Obtener el nombre del archivo JAR generado
+                              def jarFile = sh(script: "ls target/*.jar | head -n 1", returnStdout: true).trim()
+                              env.NAME_ARTEFACT = jarFile
+                              echo "Artifact generated: ${env.NAME_ARTEFACT}"
                             }
                         }
                     }
@@ -112,8 +115,8 @@ pipeline {
             stage('Archive') {
                             steps {
                                 // Archive the JAR file (adjust the path to your output file as necessary)
-                                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-                                
+                                //archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                                 archiveArtifacts artifacts: env.NAME_ARTIFACT
                             }
             }
 
