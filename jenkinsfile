@@ -113,7 +113,7 @@ pipeline {
                        }
                           steps {
                                    //sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
-                                   sh './mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=${DOCKER_IMAGE_NAME}'         
+                                   sh './mvn spring-boot:build-image -Dspring-boot.build-image.imageName=${DOCKER_IMAGE_NAME}'         
                                  }
         
              }
