@@ -45,7 +45,10 @@ pipeline {
                               sh 'mvn clean package -DskipTests'
                               // Obtener el nombre del archivo JAR generado
                               //def jarFile = sh(script: "ls target/*.jar | head -n 1", returnStdout: true).trim()
-                              def jarFile =  sh(script: "ls target/*.jar", returnStdout: true).trim()
+                              //def jarFile =  sh(script: "ls target/*.jar", returnStdout: true).trim()
+                               def jarFile = sh(script: "find target -name '*.jar'", returnStdout: true).trim()
+                               def artifactName = artifactPath.split('/')[-1].replaceAll('[ .\\/]','')
+                                // Guardar el nombre limpio del artefacto en una variable local
                               NAME_ARTEFACT = jarFile
                               echo "Artifact generated: ${NAME_ARTEFACT}"
                             }
