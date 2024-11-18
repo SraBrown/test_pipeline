@@ -15,11 +15,11 @@ pipeline {
             choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
             string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
             choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'GENERATE DOCKER_IMAGEN?')
-            string(name: 'SONARQUBE_SERVER', defaultValue: 'SonarQube', description: 'Branch Specifier')
-            string(name: 'SONAR_PROJECT_KEY', defaultValue: 'ASSDA11', description: 'Branch Specifier')
-            string(name: 'SONAR_PROJECT_NAME', defaultValue: 'ASSDA11', description: 'Branch Specifier')
-            string(name: 'SONAR_PROJECT_VERSION', defaultValue: '1.0', description: 'Branch Specifier')
-            string(name: 'SONAR_LOCALHOST', defaultValue: 'http://sonar:9000', description: 'Branch Specifier')
+            string(name: 'SONARQUBE_SERVER', defaultValue: 'SonarQube', description: 'SONAR Server')
+            string(name: 'SONAR_PROJECT_KEY', defaultValue: 'ASSDA11', description: 'Sonar Project Key')
+            string(name: 'SONAR_PROJECT_NAME', defaultValue: 'ASSDA11', description: 'Sonar Project Name')
+            string(name: 'SONAR_PROJECT_VERSION', defaultValue: '1.0', description: 'Sonar Project Name')
+            string(name: 'SONAR_LOCALHOST', defaultValue: 'http://sonar:9000', description: 'Sonar Localhost)
         }
         environment {
             SONARQUBE_SERVER = ${params.SONARQUBE_SERVER} // Name of the SonarQube server in Jenkins
