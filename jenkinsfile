@@ -46,13 +46,16 @@ pipeline {
                     }
                 }
                stage('Build and Install') {
-                 def pom = readMavenPom file: 'pom.xml'
+                
+                        steps {
+                           script {
+
+                               def pom = readMavenPom file: 'pom.xml'
 
                             // Extraer artifactId y version
                             def artifactId = pom.artifactId
-                            def version = pom.version    
-                        steps {
-                           script {
+                            def version = pom.version      
+
                               echo 'Starting Build ,params.EXECUTE_JAR=true!'
                               sh 'mvn clean package -DskipTests'
                               // Obtener el nombre del archivo JAR generado
