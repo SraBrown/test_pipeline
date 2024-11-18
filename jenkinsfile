@@ -19,7 +19,7 @@ pipeline {
             string(name: 'SONAR_PROJECT_KEY', defaultValue: 'ASSDA11', description: 'Sonar Project Key')
             string(name: 'SONAR_PROJECT_NAME', defaultValue: 'ASSDA11', description: 'Sonar Project Name')
             string(name: 'SONAR_PROJECT_VERSION', defaultValue: '1.0', description: 'Sonar Project Name')
-            string(name: 'SONAR_LOCALHOST', defaultValue: 'http://sonar:9000', description: 'Sonar Localhost)
+            string(name: 'SONAR_LOCALHOST', defaultValue: 'http://sonar:9000', description: 'Sonar Localhost')
         }
         environment {
             SONARQUBE_SERVER = ${params.SONARQUBE_SERVER} // Name of the SonarQube server in Jenkins
