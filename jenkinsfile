@@ -98,7 +98,7 @@ pipeline {
               steps {
                     script {
 
-                    def jarFilterName = NAME_ARTEFACT.replaceAll('[/-.]', '')
+                    def jarFilterName = NAME_ARTEFACT.replaceAll('[/.-]', '')
                     echo "Nombre del Artifact: ${jarFilterName}"
                     withSonarQubeEnv('SonarQube') {
                        sh "mvn clean verify sonar:sonar \
@@ -110,6 +110,13 @@ pipeline {
                     }
                     }
                 }
+            }
+
+            stage('Archive') {
+                            steps {
+                                // Archive the JAR file (adjust the path to your output file as necessary)
+                                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                            }
             }
 
               stage('Create and push Docker Imagen/Registry') {
