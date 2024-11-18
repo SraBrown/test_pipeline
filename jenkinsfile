@@ -1,8 +1,8 @@
 pipeline {
         agent any
         tools {
-           //maven 'Maven Apache'
-           maven 'Maven 3.0.1'
+           maven 'Maven Apache'
+           //maven 'Maven 3.0.1'
         }
         parameters {
             choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
