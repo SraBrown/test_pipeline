@@ -33,6 +33,8 @@ pipeline {
             DOCKER_REGISTRY = 'localhost:5000' // Cambia si tienes un registro diferente
         }
             stages {
+
+
                 stage('Checkout') {
                     steps {
                         echo 'Checkout the JAR!'
@@ -44,13 +46,13 @@ pipeline {
                     }
                 }
                stage('Build and Install') {
-                        steps {
-                            def pom = readMavenPom file: 'pom.xml'
+                 def pom = readMavenPom file: 'pom.xml'
 
                             // Extraer artifactId y version
                             def artifactId = pom.artifactId
                             def version = pom.version    
-                            script {
+                        steps {
+                           script {
                               echo 'Starting Build ,params.EXECUTE_JAR=true!'
                               sh 'mvn clean package -DskipTests'
                               // Obtener el nombre del archivo JAR generado
