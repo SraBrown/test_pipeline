@@ -47,9 +47,9 @@ pipeline {
                               echo 'Starting Build ,params.EXECUTE_JAR=true!'
                               sh 'mvn clean package -DskipTests'
                               // Obtener el nombre del archivo JAR generado
-                              //def jarFile =  sh(script: "ls target/*.jar", returnStdout: true).trim()
-                              //NAME_ARTEFACT = jarFile
-                              //echo "Artifact generated: ${NAME_ARTEFACT}"
+                              def jarFile =  sh(script: "ls target/*.jar", returnStdout: true).trim()
+                              NAME_ARTEFACT = jarFile
+                              echo "Artifact generated: ${NAME_ARTEFACT}"
                             }
                         }
                     }
@@ -130,8 +130,8 @@ pipeline {
                                                     git init
                                                     git remote add origin ${REPO_URL}
                                                     git checkout -b artifacts-branch
-                                                    git add target/${ARTIFACT_NAME}.jar
-                                                    git commit -m "Add artifact ${ARTIFACT_NAME}.jar"
+                                                    git add target/${NAME_ARTEFACT}.jar
+                                                    git commit -m "Add artifact ${NAME_ARTEFACT}.jar"
                                                     git push -u origin artifacts-branch
                                                 '''
                                             }
