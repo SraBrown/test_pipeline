@@ -100,6 +100,8 @@ pipeline {
                           expression { params.EXECUTE_SONAR == 'Yes' }
                         }
               steps {
+              
+                    def jarSonar = NAME_ARTEFACT.trim()
                     withSonarQubeEnv('SonarQube') {
                        sh "mvn clean verify sonar:sonar \
                              -Dsonar.projectKey=${NAME_ARTEFACT} \
@@ -111,12 +113,10 @@ pipeline {
                 }
             }
 
-            
             stage('Archive') {
                             steps {
                                 // Archive the JAR file (adjust the path to your output file as necessary)
                                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
-                                
                             }
             }
 
@@ -136,24 +136,6 @@ pipeline {
                                            sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
                                       }
               }
-
-
-
-            /*
-              stage('Quality Gate') {
-                    when {
-                            expression { params.EXECUTE_SONAR == 'Yes' }
-                        }
-                        steps {
-                            script {
-                                // Wait for SonarQube analysis to finish and check quality gate status
-                                timeout(time: 5, unit: 'MINUTES') {
-                                    waitForQualityGate abortPipeline: true
-                                }
-                            }
-                        }
-                    }
-            */
 
         }
     }
