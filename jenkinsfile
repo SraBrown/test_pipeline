@@ -50,7 +50,7 @@ pipeline {
                               // Obtener el nombre del archivo JAR generado
                               def jarFile = sh(script: "ls target/*.jar | head -n 1", returnStdout: true).trim()
                               NAME_ARTEFACT = jarFile
-                              echo "Artifact generated: "${NAME_ARTEFACT}"
+                              echo "Artifact generated: ${NAME_ARTEFACT}"
                             }
                         }
                     }
