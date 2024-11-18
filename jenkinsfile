@@ -97,7 +97,8 @@ pipeline {
                         }
               steps {
                     script {
-
+                    def artifact1 = NAME_ARTEFACT.split('.jar')
+                      echo "Nombre del Artifact: ${artifact1}"            
                     //def jarFilterName = NAME_ARTEFACT.replaceAll('[[^a-zA-Z0-9]/.-]', '_')
                     def jarFilterName = NAME_ARTEFACT.tokenize('/').last().replaceAll(/[^a-zA-Z0-9_]/, '') - '.jar'
                     echo "Nombre del Artifact: ${jarFilterName}"
