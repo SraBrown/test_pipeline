@@ -13,7 +13,7 @@ pipeline {
             choice(name: 'EXECUTE_SONAR', choices: ['Yes', 'No'], description: 'Execute SONAR?')
             choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
             string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
-             choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'GENERATE DOCKER_IMAGEN?')
+            choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'GENERATE DOCKER_IMAGEN?')
             string(name: 'SONARQUBE_SERVER', defaultValue: 'SonarQube', description: 'Sonar Specifier')
             string(name: 'SONAR_PROJECT_VERSION', defaultValue: '1.0', description: 'Sonar Specifier')
             string(name: 'SONAR_LOCALHOST', defaultValue: 'http://sonar:9000', description: 'Sonar Localhost')
@@ -21,9 +21,9 @@ pipeline {
         environment {
             SONARQUBE_SERVER = "${params.SONARQUBE_SERVER}" // Name of the SonarQube server in Jenkins
             SONAR_PROJECT_VERSION = "${params.SONAR_PROJECT_VERSION}"
-	        SONAR_HOST = "${params.SONAR_LOCALHOST}"
+	    SONAR_HOST = "${params.SONAR_LOCALHOST}"
             //TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
-            TOKEN_SONAR =token_sonar'
+            TOKEN_SONAR ='token_sonar'
             JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
             DOCKER_IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
             NAME_ARTEFACT = ''
