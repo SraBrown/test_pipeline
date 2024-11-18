@@ -14,9 +14,11 @@ pipeline {
             choice(name: 'EXECUTE_SONAR', choices: ['Yes', 'No'], description: 'Execute SONAR?')
             choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
             string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
-            choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'GENERATE DOCKER_IMAGEN?')
-            string(name: 'SONARQUBE_SERVER', defaultValue: 'SonarQube', description: 'SONAR Server')
-            string(name: 'SONAR_PROJECT_VERSION', defaultValue: '1.0', description: 'Sonar Project Name')
+             choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'GENERATE DOCKER_IMAGEN?')
+            string(name: 'SONARQUBE_SERVER', defaultValue: 'SonarQube', description: 'Branch Specifier')
+            string(name: 'SONAR_PROJECT_KEY', defaultValue: 'ASSDA11', description: 'Branch Specifier')
+            string(name: 'SONAR_PROJECT_NAME', defaultValue: 'ASSDA11', description: 'Branch Specifier')
+            string(name: 'SONAR_PROJECT_VERSION', defaultValue: '1.0', description: 'Branch Specifier')
             string(name: 'SONAR_LOCALHOST', defaultValue: 'http://sonar:9000', description: 'Sonar Localhost')
         }
         environment {
@@ -96,20 +98,12 @@ pipeline {
                           expression { params.EXECUTE_SONAR == 'Yes' }
                         }
               steps {
-                    script {
-
-                    //def jarFilterName = NAME_ARTEFACT.replaceAll('[[^a-zA-Z0-9]/.-]', '_')
-                    //def artifact1 = NAME_ARTEFACT.split('.jar')
-                      //echo "Nombre del Artifact: ${artifact1}"
-                    //def jarFilterName = NAME_ARTEFACT.tokenize('/').last().replaceAll(/[^a-zA-Z0-9_]/, '') - '.jar'
-                    //echo "Nombre del Artifact: ${jarFilterName}"
-                    withSonarQubeEnv('SonarQube') {
-                       sh "mvn clean verify sonar:sonar \
-                             -Dsonar.projectKey= ASSDA \
-                             -Dsonar.projectName= ASSDA \
+                    sh "mvn clean verify sonar:sonar \
+                             -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                             -Dsonar.projectName=${SONAR_PROJECT_NAME} \
+                             -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} \
                              -Dsonar.host.url=${SONAR_HOST} \
                              -Dsonar.login=${TOKEN_SONAR}"
-                    }
                     }
                 }
             }
