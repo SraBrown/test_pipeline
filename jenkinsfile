@@ -24,6 +24,7 @@ pipeline {
             string(name: 'NEXUS_CREDENTIALS_ID', defaultValue: 'nexus-credentials', description: 'NEXUS_URL')
             string(name: 'NEXUS_REPOSITORY', defaultValue: 'maven-releases', description: 'NEXUS_URL')
             string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'dev.opentrends.net/A4012/spring-cloud-config:latest', description: 'Docker imagen')
+            string(name: 'DOCKER_LOGIN', defaultValue: 'docker-a4012.opentrends.net', description: 'Docker Login')
         }
         environment {
             JAVA_HOME = tool("${params.JAVA_TOOL}") // Configure JAVA_HOME segment parameters
@@ -40,7 +41,7 @@ pipeline {
             POM_GROUP_ID = ''
             POM_PACKAGING = ''
             DOCKER_IMAGE_NAME = "${params.DOCKER_IMAGE_NAME}"
-
+            DOCKER_LOGIN = "${params.DOCKER_LOGIN}"
             DOCKER_REGISTRY = 'localhost:5000' // Cambia si tienes un registro diferente
             NEXUS_URL = "${params.NEXUS_URL}"
             NEXUS_CREDENTIALS_ID = "${params.NEXUS_CREDENTIALS_ID}" // ID de las credenciales en Jenkins
@@ -145,15 +146,15 @@ pipeline {
                   script{
                     if (params.GENERATE_MICROSERVICE == 'Yes'){
                                 sh "mvn spring-boot:build-image"
-                                sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
+                                echo "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
                                 // Loguearse en el registro de Docker (si es necesario)
                                 // sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
 
                                 // Etiquetar la imagen
                                 sh "docker tag scc:1.0.0 ${DOCKER_IMAGE_NAME}"
                                 // Subir la imagen al registro Docker
-                                sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
-                                sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}"
+                                sh 'docker login DOCKER_LOGIN'
+                                sh "docker push $${DOCKER_IMAGE_NAME}"
                              }
 				else {
 		                       // Subir el artefact al Nexus
