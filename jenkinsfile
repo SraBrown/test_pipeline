@@ -154,7 +154,7 @@ pipeline {
                                 sh "docker tag scc:1.0.0 ${DOCKER_IMAGE_NAME}"
                                 // Subir la imagen al registro Docker
                                 sh 'docker login DOCKER_LOGIN'
-                                sh "docker push $${DOCKER_IMAGE_NAME}"
+                                sh "docker push ${DOCKER_IMAGE_NAME}"
                              }
 				else {
 		                       // Subir el artefact al Nexus
