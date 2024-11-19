@@ -20,6 +20,9 @@ pipeline {
             string(name: 'SONARQUBE_SERVER', defaultValue: 'SonarQube', description: 'Sonar Specifier')
             string(name: 'SONAR_PROJECT_VERSION', defaultValue: '1.0', description: 'Sonar Specifier')
             string(name: 'SONAR_LOCALHOST', defaultValue: 'http://sonar:9000', description: 'Sonar Localhost')
+            string(name: 'NEXUS_URL', defaultValue: 'https://dev.opentrends.net/nexus', description: 'NEXUS_URL')
+            string(name: 'NEXUS_CREDENTIALS_ID', defaultValue: 'nexus-credentials', description: 'NEXUS_URL')
+            string(name: 'NEXUS_REPOSITORY', defaultValue: 'maven-releases', description: 'NEXUS_URL')
         }
         environment {
             JAVA_HOME = tool("${params.JAVA_TOOL}") // Configure JAVA_HOME segment parameters
@@ -34,9 +37,9 @@ pipeline {
             NAME_ARTEFACT = ''
             ARTIFACT_NAME = ''
             DOCKER_REGISTRY = 'localhost:5000' // Cambia si tienes un registro diferente
-            NEXUS_URL = 'https://dev.opentrends.net/nexus'
-            NEXUS_CREDENTIALS_ID = 'nexus-credentials' // ID de las credenciales en Jenkins
-            NEXUS_REPOSITORY = 'maven-releases'
+            NEXUS_URL = "${params.NEXUS_URL}"
+            NEXUS_CREDENTIALS_ID = "${params.NEXUS_CREDENTIALS_ID}" // ID de las credenciales en Jenkins
+            NEXUS_REPOSITORY = "${params.NEXUS_REPOSITORY}"
         }
             stages {
 
@@ -131,11 +134,11 @@ pipeline {
                 }
 
 
-            stage('Create and push Docker Imagen/Registry') {
+            stage('Create and push Docker Image/Registry') {
                 steps {
                   script{
                     if (params.GENERATE_MICROSERVICE == 'Yes'){
-                                sh 'mvn spring-boot:build-image -Dspring-boot.build-image.imageName=DOCKER_IMAGE_NAME'
+                                sh "mvn spring-boot:build-image -Dspring-boot.build-image.imageName=${DOCKER_IMAGE_NAME}"
                                 sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
                                 // Loguearse en el registro de Docker (si es necesario)
                                 // sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
@@ -148,7 +151,7 @@ pipeline {
 					script {
 				             steps {
 
-                                 // Subir el artefacto al Nexus
+                                 // Subir el artefact al Nexus
                                             nexusArtifactUploader(
                                             nexusVersion: 'nexus3',
                                             protocol: 'https',
