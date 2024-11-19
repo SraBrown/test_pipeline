@@ -23,6 +23,7 @@ pipeline {
             string(name: 'NEXUS_URL', defaultValue: 'https://dev.opentrends.net/nexus', description: 'NEXUS_URL')
             string(name: 'NEXUS_CREDENTIALS_ID', defaultValue: 'nexus-credentials', description: 'NEXUS_URL')
             string(name: 'NEXUS_REPOSITORY', defaultValue: 'maven-releases', description: 'NEXUS_URL')
+            string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'dev.opentrends.net/A4012/spring-cloud-config:latest', description: 'Docker imagen')
         }
         environment {
             JAVA_HOME = tool("${params.JAVA_TOOL}") // Configure JAVA_HOME segment parameters
@@ -33,8 +34,8 @@ pipeline {
             TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
             //TOKEN_SONAR ='token_sonar'
             JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
-            DOCKER_IMAGE_NAME = 'dev.opentrends.net/A4012/spring-cloud-config:latest'
             NAME_ARTEFACT = ''
+            DOCKER_IMAGE_NAME = "${params.DOCKER_IMAGE_NAME}"
             ARTIFACT_NAME = ''
             DOCKER_REGISTRY = 'localhost:5000' // Cambia si tienes un registro diferente
             NEXUS_URL = "${params.NEXUS_URL}"
@@ -143,9 +144,9 @@ pipeline {
                                 // Loguearse en el registro de Docker (si es necesario)
                                 // sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
                                 // Etiquetar la imagen
-                                sh "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
+                                sh "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}"
                                 // Subir la imagen al registro Docker
-                                sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
+                                sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}"
                              }
 				else {
 					script {
