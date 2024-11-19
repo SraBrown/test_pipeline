@@ -107,15 +107,15 @@ pipeline {
                                 // Verifica que los archivos se hayan descargado
                                 sh "ls -l ${jacocoPath}"
                                 sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
-                               
-/*
+                                //sh 'mvn ${jacocoPath}:report'
+
                                sh "java -jar ${jacocoPath} report jacoco.exec \
                                                --classfiles target/classes \
                                                --sourcefiles src/main/java \
                                                --html target/jacoco-report
                                                '"
-*/
-                            
+
+                                //sh  ' -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml '
 
                             }
                         }
@@ -140,7 +140,6 @@ pipeline {
                              -Dsonar.projectName=${NAME_ARTEFACT}${SONAR_PROJECT_VERSION} \
                              -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} \
                              -Dsonar.host.url=${SONAR_HOST} \
- 			     -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
                              -Dsonar.login=${TOKEN_SONAR}"
                     }
                 }
@@ -155,7 +154,7 @@ pipeline {
                                 // Loguearse en el registro de Docker (si es necesario)
                                 // sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
                                 // Etiquetar la imagen
-                                sh "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}"
+                                sh "docker tag scc:1.0.0 ${DOCKER_IMAGE_NAME} ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}"
                                 // Subir la imagen al registro Docker
                                 sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}"
                              }
