@@ -40,7 +40,7 @@ pipeline {
             POM_GROUP_ID = ''
             POM_PACKAGING = ''
             DOCKER_IMAGE_NAME = "${params.DOCKER_IMAGE_NAME}"
-            
+
             DOCKER_REGISTRY = 'localhost:5000' // Cambia si tienes un registro diferente
             NEXUS_URL = "${params.NEXUS_URL}"
             NEXUS_CREDENTIALS_ID = "${params.NEXUS_CREDENTIALS_ID}" // ID de las credenciales en Jenkins
@@ -70,8 +70,9 @@ pipeline {
                             POM_VERSION = pom.version
                             POM_PACKAGING = pom.packaging
                             POM_GROUP_ID = pom.groupId
-                            def artifactPath = "target/${artifactId}-${version}.${packaging}"
-                            ARTIFACT_PATH = artifactPath   
+                            def artifactPath = "target/${NAME_ARTEFACT}-${POM_VERSION}.${POM_PACKAGING}"
+                            ARTIFACT_PATH = artifactPath
+                            echo ARTIFACT_PATH
 			            }
                     }
                 }
