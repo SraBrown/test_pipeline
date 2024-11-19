@@ -7,7 +7,7 @@ pipeline {
         }
         parameters {
             choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
-            string(name: 'MAVEN_TOOL', defaultValue: 'Maven.3.0.1', description: 'Maven Tool configurado en Jenkins')
+            string(name: 'MAVEN_TOOL', defaultValue: 'Maven 3.0.1', description: 'Maven Tool configurado en Jenkins')
             string(name: 'URL_GIT', defaultValue: 'git@gitlab.opentrends.net:a4012/code/encuestas-backend.git', description: 'Git')
             //string(name: 'URL_GIT', defaultValue: 'https://github.com/SraBrown/test_pipeline.git', description: 'Branch Specifier')
             string(name: 'BRANCH', defaultValue: 'develop', description: 'Branch Specifier')
@@ -22,7 +22,7 @@ pipeline {
             string(name: 'SONAR_LOCALHOST', defaultValue: 'http://sonar:9000', description: 'Sonar Localhost')
         }
         environment {
-            JAVA_HOME = tool("${params.JAVA_TOOL}") // Configura JAVA_HOME según el parámetro
+            JAVA_HOME = tool("${params.JAVA_TOOL}") // Configure JAVA_HOME segment parameters
             PATH = "${JAVA_HOME}/bin:${PATH}" // Ajusta el PATH
             SONARQUBE_SERVER = "${params.SONARQUBE_SERVER}" // Name of the SonarQube server in Jenkins
             SONAR_PROJECT_VERSION = "${params.SONAR_PROJECT_VERSION}"
@@ -51,10 +51,10 @@ pipeline {
                 }
 
 
-               stage('Prepare Enviroment Variable') {
+               stage('Prepare Environment Variable') {
                     steps {
                         script {
-                            // Extraer información del artefacto usando Maven
+                            // Extra information del artefact using Maven
                             def pom = readMavenPom file: 'pom.xml'
                             NAME_ARTEFACT = pom.artifactId
                             echo "Artifact Name: ${NAME_ARTEFACT}"
@@ -135,16 +135,15 @@ pipeline {
                 steps {
                   script{
                     if (params.GENERATE_MICROSERVICE == 'Yes'){
+                                sh 'mvn spring-boot:build-image -Dspring-boot.build-image.imageName=DOCKER_IMAGE_NAME'
                                 sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
-                                                   // Loguearse en el registro de Docker (si es necesario)
-                                                   // sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
-
-                                                   // Etiquetar la imagen
-                                                   sh "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
-
-                                                   // Subir la imagen al registro Docker
-                                                   sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
-                                  }
+                                // Loguearse en el registro de Docker (si es necesario)
+                                // sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
+                                // Etiquetar la imagen
+                                sh "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
+                                // Subir la imagen al registro Docker
+                                sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
+                             }
 				else {
 					script {
 				             steps {
