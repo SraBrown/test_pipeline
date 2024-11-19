@@ -109,11 +109,13 @@ pipeline {
                                 sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
                                 //sh 'mvn ${jacocoPath}:report'
 
-                                sh "java -jar ${jacocoPath}/jacococli.jar report jacoco.exec \
-                                                                                     --classfiles target/classes \
-                                                                                     --sourcefiles src/main/java \
-                                                                                     --html target/jacoco-report"
-                                                                                     
+                               sh '''
+                                               java -jar ${jacocoPath} report jacoco.exec \
+                                               --classfiles target/classes \
+                                               --sourcefiles src/main/java \
+                                               --html target/jacoco-report
+                                               '''
+
                                 //sh  ' -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml '
 
                             }
