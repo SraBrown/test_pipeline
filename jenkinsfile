@@ -1,8 +1,8 @@
 pipeline {
         agent any
         tools {
-           maven 'Maven Apache'
-           //maven 'Maven 3.0.1'
+           //maven 'Maven Apache'
+           maven 'Maven 3.0.1'
         }
         parameters {
             choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
@@ -21,7 +21,7 @@ pipeline {
         environment {
             SONARQUBE_SERVER = "${params.SONARQUBE_SERVER}" // Name of the SonarQube server in Jenkins
             SONAR_PROJECT_VERSION = "${params.SONAR_PROJECT_VERSION}"
-	    SONAR_HOST = "${params.SONAR_LOCALHOST}"
+	        SONAR_HOST = "${params.SONAR_LOCALHOST}"
             TOKEN_SONAR ='squ_65c191c06933b1c3ad3cf7fff9a7b59954f67a00'
             //TOKEN_SONAR ='token_sonar'
             JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
@@ -29,12 +29,16 @@ pipeline {
             NAME_ARTEFACT = ''
             ARTIFACT_NAME = ''
             DOCKER_REGISTRY = 'localhost:5000' // Cambia si tienes un registro diferente
+            NEXUS_URL = 'https://dev.opentrends.net/nexus'
+            NEXUS_CREDENTIALS_ID = 'nexus-credentials' // ID de las credenciales en Jenkins
+            NEXUS_REPOSITORY = 'maven-releases'
         }
             stages {
 
                 stage('Checkout') {
                     steps {
                         echo 'Checkout the JAR!'
+                        echo JAVA_HOME
                         checkout scmGit(branches: [[name: '$BRANCH']], extensions: [], userRemoteConfigs:
                                 [[credentialsId: "${params.GITLAB_CREDENTIALS}", url: "${params.URL_GIT}"]])
 
@@ -136,17 +140,35 @@ pipeline {
                                            }
 				else {
 					script {
-				                    // Inicializar git, añadir el archivo JAR y hacer push
-				                    sh "git init \
-				                        git remote add origin ${params.URL_GIT} \
-							git checkout -b develop \
-				                        git add target/${NAME_ARTEFACT }.jar \
-				                        git commit -m "Add artifact ${NAME_ARTEFACT }.jar" \
-				                        git push -u origin artifacts-branch"
-				                }
+				             steps {
+		                              // Extraer información del artefacto usando Maven
+		                               def pom = readMavenPom file: 'pom.xml'
+		                               def artifactId = pom.artifactId
+		                               def version = pom.version
+		                               def packaging = pom.packaging
+		                               def artifactPath = "target/${artifactId}-${version}.${packaging}"
+		
+		                                 // Subir el artefacto al Nexus
+		                                            nexusArtifactUploader(
+		                                            nexusVersion: 'nexus3',
+		                                            protocol: 'https',
+		                                            nexusUrl: "${NEXUS_URL}",
+		                                            groupId: "${pom.groupId}",
+		                                            version: "${version}",
+		                                            repository: "${NEXUS_REPOSITORY}",
+		                                            credentialsId: "${NEXUS_CREDENTIALS_ID}",
+		                                            artifacts: [[
+		                                            artifactId: "${artifactId}",
+		                                            classifier: '',
+		                                            file: artifactPath,
+		                                            type: "${packaging}"
+		                                            ]])
+                              				 }
+
+				         	}
 					}
 				}
 			}
-            }
-}
+     		 }
+	}
 }
