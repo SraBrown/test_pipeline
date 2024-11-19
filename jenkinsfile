@@ -115,10 +115,10 @@ pipeline {
                                                                                      --html target/jacoco-report"
                                                                                      */
                                 //sh  ' -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml '
-                                 sh "jacoco execPattern: '**/build/jacoco/test.exec',
-                                                           classPattern: '**/build/classes/java/main',
-                                                           sourcePattern: '**/src/main/java',
-                                                           exclusionPattern: ''"
+                                 sh 'jacoco execPattern: '**/build/jacoco/test.exec' \
+                                                           classPattern: '**/build/classes/java/main\,
+                                                           sourcePattern: '**/src/main/java' \,
+                                                           exclusionPattern: '''
                             }
                         }
                     }
