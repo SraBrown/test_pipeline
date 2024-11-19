@@ -107,7 +107,7 @@ pipeline {
                                 // Verifica que los archivos se hayan descargado
                                 sh "ls -l ${jacocoPath}"
                                 sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
-                                sh 'mvn ${jacocoPath}:report'
+                               
 /*
                                sh "java -jar ${jacocoPath} report jacoco.exec \
                                                --classfiles target/classes \
@@ -115,7 +115,7 @@ pipeline {
                                                --html target/jacoco-report
                                                '"
 */
-                                //sh  ' -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml '
+                            
 
                             }
                         }
@@ -140,6 +140,7 @@ pipeline {
                              -Dsonar.projectName=${NAME_ARTEFACT}${SONAR_PROJECT_VERSION} \
                              -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} \
                              -Dsonar.host.url=${SONAR_HOST} \
+ 			     -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
                              -Dsonar.login=${TOKEN_SONAR}"
                     }
                 }
