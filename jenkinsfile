@@ -1,24 +1,27 @@
 pipeline {
         agent any
         tools {
-           maven 'Maven Apache'
-           //maven 'Maven 3.0.1'
+           //maven 'Maven Apache'
+           maven 'Maven 3.0.1'
         }
         parameters {
             choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
-            booleanParam(name: 'EXECUTE_JAR', defaultValue: true, description: 'Enable JAR')
+            booleanParam(name: 'GENERATE_MICROSERVICE', defaultValue: true, description: 'Generate microservice)
+            string(name: 'URL_GIT', defaultValue: 'git@gitlab.opentrends.net:a4012/code/encuestas-backend.git', description: 'Git')
             string(name: 'URL_GIT', defaultValue: 'https://github.com/SraBrown/test_pipeline.git', description: 'Branch Specifier')
             string(name: 'BRANCH', defaultValue: 'develop', description: 'Branch Specifier')
-            string(name: 'GITLAB_CREDENTIALS', defaultValue: 'INT-GIT-JENKINS', description: 'Name Token')
+            string(name: 'GITLAB_CREDENTIALS', defaultValue: 'int-git-jenkins', description: 'Name Token')
             choice(name: 'EXECUTE_SONAR', choices: ['Yes', 'No'], description: 'Execute SONAR?')
             choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
-            string(name: 'JAVA_HOME', defaultValue: '/opt/java/openjdk', description: 'Enter Directory Java')
-            choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'GENERATE DOCKER_IMAGEN?')
+            string(name: 'JAVA_TOOL', defaultValue: 'JDK-17', description: 'Name java configurted in jenkins')
+            choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'Generate docker imagen?')
             string(name: 'SONARQUBE_SERVER', defaultValue: 'SonarQube', description: 'Sonar Specifier')
             string(name: 'SONAR_PROJECT_VERSION', defaultValue: '1.0', description: 'Sonar Specifier')
             string(name: 'SONAR_LOCALHOST', defaultValue: 'http://sonar:9000', description: 'Sonar Localhost')
         }
         environment {
+            JAVA_HOME = tool("${params.JAVA_TOOL}") // Configura JAVA_HOME según el parámetro
+            PATH = "${JAVA_HOME}/bin:${PATH}" // Ajusta el PATH
             SONARQUBE_SERVER = "${params.SONARQUBE_SERVER}" // Name of the SonarQube server in Jenkins
             SONAR_PROJECT_VERSION = "${params.SONAR_PROJECT_VERSION}"
 	        SONAR_HOST = "${params.SONAR_LOCALHOST}"
@@ -38,7 +41,7 @@ pipeline {
                 stage('Checkout') {
                     steps {
                         echo 'Checkout the JAR!'
-                        echo JAVA_HOME
+                        sh 'java -version'
                         checkout scmGit(branches: [[name: '$BRANCH']], extensions: [], userRemoteConfigs:
                                 [[credentialsId: "${params.GITLAB_CREDENTIALS}", url: "${params.URL_GIT}"]])
 
@@ -46,12 +49,17 @@ pipeline {
                 }
 
 
-               stage('Extract Artifact Name') {
+               stage('Prepare Enviroment Variable') {
                     steps {
                         script {
+                            // Extraer información del artefacto usando Maven
                             def pom = readMavenPom file: 'pom.xml'
                             NAME_ARTEFACT = pom.artifactId
                             echo "Artifact Name: ${NAME_ARTEFACT}"
+                            def artifactId = NAME_ARTEFACT
+                            def version = pom.version
+                            def packaging = pom.packaging
+                            def artifactPath = "target/${artifactId}-${version}.${packaging}"
                         }
                     }
                 }
@@ -60,11 +68,8 @@ pipeline {
 
                         steps {
                            script {
-
-                              echo 'Starting Build ,params.EXECUTE_JAR=true!'
+                              echo 'Starting Build ,XMM'
                               sh 'mvn clean package -DskipTests'
-                              // Obtener el nombre del archivo JAR generado
-                              echo "Artifact generated: ${NAME_ARTEFACT}"
                             }
                         }
                     }
@@ -126,49 +131,44 @@ pipeline {
 
             stage('Create and push Docker Imagen/Registry') {
                 steps {
-		  script{
-			if (params.GENERATE_DOCKER == 'Yes'){
-                    	sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
-                                           // Loguearse en el registro de Docker (si es necesario)
-                                           // sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
+                  script{
+                    if (params.GENERATE_MICROSERVICE == 'Yes'){
+                                sh "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
+                                                   // Loguearse en el registro de Docker (si es necesario)
+                                                   // sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
 
-                                           // Etiquetar la imagen
-                                           sh "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
+                                                   // Etiquetar la imagen
+                                                   sh "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
 
-                                           // Subir la imagen al registro Docker
-                                           sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
-                                           }
+                                                   // Subir la imagen al registro Docker
+                                                   sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:latest"
+                                  }
 				else {
 					script {
 				             steps {
-		                              // Extraer información del artefacto usando Maven
-		                               def pom = readMavenPom file: 'pom.xml'
-		                               def artifactId = pom.artifactId
-		                               def version = pom.version
-		                               def packaging = pom.packaging
-		                               def artifactPath = "target/${artifactId}-${version}.${packaging}"
-		
-		                                 // Subir el artefacto al Nexus
-		                                            nexusArtifactUploader(
-		                                            nexusVersion: 'nexus3',
-		                                            protocol: 'https',
-		                                            nexusUrl: "${NEXUS_URL}",
-		                                            groupId: "${pom.groupId}",
-		                                            version: "${version}",
-		                                            repository: "${NEXUS_REPOSITORY}",
-		                                            credentialsId: "${NEXUS_CREDENTIALS_ID}",
-		                                            artifacts: [[
-		                                            artifactId: "${artifactId}",
-		                                            classifier: '',
-		                                            file: artifactPath,
-		                                            type: "${packaging}"
-		                                            ]])
-                              				 }
 
-				         	}
+                                 // Subir el artefacto al Nexus
+                                            nexusArtifactUploader(
+                                            nexusVersion: 'nexus3',
+                                            protocol: 'https',
+                                            nexusUrl: "${NEXUS_URL}",
+                                            groupId: "${pom.groupId}",
+                                            version: "${version}",
+                                            repository: "${NEXUS_REPOSITORY}",
+                                            credentialsId: "${NEXUS_CREDENTIALS_ID}",
+                                            artifacts: [[
+                                            artifactId: "${artifactId}",
+                                            classifier: '',
+                                            file: artifactPath,
+                                            type: "${packaging}"
+                                            ]]
+                                    )
+                               }
+
+				         }
 					}
 				}
 			}
-     		 }
-	}
+      }
+}
 }
