@@ -166,11 +166,12 @@ pipeline {
 		                       repository: "${NEXUS_REPOSITORY}",
 		                       credentialsId: "${NEXUS_CREDENTIALS_ID}",
 		                       artifacts: [[
-		                       artifactId: "${NAME_ARTEFACT}",
-		                       classifier: '',
-		                       file: ARTEFACT_PATH,
-		                       type: "${POM_PACKAGING}"
-		                       ]])
+                                   artifactId: "${NAME_ARTEFACT}",
+                                   classifier: '',
+                                   file: "${ARTIFACT_PATH}",
+                                   type: "${POM_PACKAGING}"
+                                   ]]
+                                   )
 					}
 				}
 			}
