@@ -1,8 +1,6 @@
 pipeline {
         agent any
         tools {
-           //maven 'Maven Apache'
-           //maven 'Maven 3.0.1'
            maven "${MAVEN_TOOL}"
         }
         parameters {
@@ -149,8 +147,7 @@ pipeline {
                                 echo "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
                                 // Loguearse en el registro de Docker (si es necesario)
                                 // sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
-
-                                // Etiquetar la imagen
+                                // Crea el tag
                                 sh "docker tag scc:1.0.0 ${DOCKER_IMAGE_NAME}"
                                 // Subir la imagen al registro Docker
                                 sh "docker login ${DOCKER_LOGIN}"
@@ -160,7 +157,7 @@ pipeline {
 		                       // Subir el artefact al Nexus
 		                       nexusArtifactUploader(
 		                       nexusVersion: 'nexus3',
-		                       protocol: 'https',
+		                       //protocol: 'https',
 		                       nexusUrl: "${NEXUS_URL}",
 		                       groupId: "${POM_GROUP_ID}",
 		                       version: "${POM_VERSION}",
