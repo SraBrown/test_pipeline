@@ -168,7 +168,7 @@ pipeline {
 		                       artifacts: [[
 		                       artifactId: "${NAME_ARTEFACT}",
 		                       classifier: '',
-		                       file: NAME_ARTEFACT,
+		                       file: ARTEFACT_PATH,
 		                       type: "${POM_PACKAGING}"
 		                       ]])
 					}
