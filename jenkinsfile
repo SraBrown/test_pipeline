@@ -149,9 +149,7 @@ pipeline {
                                 sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}"
                              }
 				else {
-						script {
-					          
-	                                 // Subir el artefact al Nexus
+					// Subir el artefact al Nexus
 	                                            nexusArtifactUploader(
 	                                            nexusVersion: 'nexus3',
 	                                            protocol: 'https',
@@ -167,11 +165,10 @@ pipeline {
 	                                            type: "${packaging}"
 	                                            ]]
 		                                    )
-		                               }
 
 					}
 				}
 			}
-      }
-}
+     		 }
+  }
 }
