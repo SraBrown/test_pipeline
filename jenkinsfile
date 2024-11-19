@@ -1,13 +1,11 @@
 pipeline {
         agent any
         tools {
-           maven 'Maven Apache'
-           //maven 'Maven 3.0.1'
+           //maven 'Maven Apache'
+           maven 'Maven 3.0.1'
         }
         parameters {
             choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
-            choice(name: 'GENERATE_MICROSERVICE', choices: ['Yes', 'No'], description: 'Generate microservice')
-            string(name: 'BRANCH', defaultValue: 'develop', description: 'Branch Specifier')
             string(name: 'URL_GIT', defaultValue: 'git@gitlab.opentrends.net:a4012/code/encuestas-backend.git', description: 'Git')
             //string(name: 'URL_GIT', defaultValue: 'https://github.com/SraBrown/test_pipeline.git', description: 'Branch Specifier')
             string(name: 'BRANCH', defaultValue: 'develop', description: 'Branch Specifier')
@@ -16,6 +14,7 @@ pipeline {
             choice(name: 'EXECUTE_JACOCO', choices: ['Yes', 'No'], description: 'Execute JACOCO?')
             string(name: 'JAVA_TOOL', defaultValue: 'JDK-17', description: 'Name java configurted in jenkins')
             choice(name: 'GENERATE_DOCKER', choices: ['Yes', 'No'], description: 'Generate docker imagen?')
+            choice(name: 'GENERATE_MICROSERVICE', choices: ['Yes', 'No'], description: 'Generate microservice?')
             string(name: 'SONARQUBE_SERVER', defaultValue: 'SonarQube', description: 'Sonar Specifier')
             string(name: 'SONAR_PROJECT_VERSION', defaultValue: '1.0', description: 'Sonar Specifier')
             string(name: 'SONAR_LOCALHOST', defaultValue: 'http://sonar:9000', description: 'Sonar Localhost')
