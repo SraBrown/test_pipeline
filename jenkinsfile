@@ -35,8 +35,12 @@ pipeline {
             //TOKEN_SONAR ='token_sonar'
             JACOCO_REPORT_PATH = 'target/jacoco.exec'      // Ruta al archivo de cobertura de JaCoCo
             NAME_ARTEFACT = ''
+            ARTIFACT_PATH = ''
+            POM_VERSION = ''
+            POM_GROUP_ID = ''
+            POM_PACKAGING = ''
             DOCKER_IMAGE_NAME = "${params.DOCKER_IMAGE_NAME}"
-            ARTIFACT_NAME = ''
+            
             DOCKER_REGISTRY = 'localhost:5000' // Cambia si tienes un registro diferente
             NEXUS_URL = "${params.NEXUS_URL}"
             NEXUS_CREDENTIALS_ID = "${params.NEXUS_CREDENTIALS_ID}" // ID de las credenciales en Jenkins
@@ -63,11 +67,12 @@ pipeline {
                             NAME_ARTEFACT = pom.artifactId
                             echo "Artifact Name: ${NAME_ARTEFACT}"
                             def artifactId = NAME_ARTEFACT
-                            def version = pom.version
-                            def packaging = pom.packaging
+                            POM_VERSION = pom.version
+                            POM_PACKAGING = pom.packaging
+                            POM_GROUP_ID = pom.groupId
                             def artifactPath = "target/${artifactId}-${version}.${packaging}"
-			    def groupId = pom.groupId	
-}
+                            ARTIFACT_PATH = artifactPath   
+			            }
                     }
                 }
 
@@ -155,19 +160,19 @@ pipeline {
 		                       nexusVersion: 'nexus3',
 		                       protocol: 'https',
 		                       nexusUrl: "${NEXUS_URL}",
-		                       groupId: "${groupId}",
-		                       version: "${version}",
+		                       groupId: "${POM_GROUP_ID}",
+		                       version: "${POM_VERSION}",
 		                       repository: "${NEXUS_REPOSITORY}",
 		                       credentialsId: "${NEXUS_CREDENTIALS_ID}",
 		                       artifacts: [[
-		                       artifactId: "${artifactId}",
+		                       artifactId: "${NAME_ARTEFACT}",
 		                       classifier: '',
-		                       file: artifactPath,
-		                       type: "${packaging}"
+		                       file: NAME_ARTEFACT,
+		                       type: "${POM_PACKAGING}"
 		                       ]])
 					}
 				}
 			}
       }
-}
+    }
 }
