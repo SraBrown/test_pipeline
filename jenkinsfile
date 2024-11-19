@@ -149,28 +149,26 @@ pipeline {
                                 sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}"
                              }
 				else {
-					script {
-				             steps {
+						script {
+					          
+	                                 // Subir el artefact al Nexus
+	                                            nexusArtifactUploader(
+	                                            nexusVersion: 'nexus3',
+	                                            protocol: 'https',
+	                                            nexusUrl: "${NEXUS_URL}",
+	                                            groupId: "${pom.groupId}",
+	                                            version: "${version}",
+	                                            repository: "${NEXUS_REPOSITORY}",
+	                                            credentialsId: "${NEXUS_CREDENTIALS_ID}",
+	                                            artifacts: [[
+	                                            artifactId: "${artifactId}",
+	                                            classifier: '',
+	                                            file: artifactPath,
+	                                            type: "${packaging}"
+	                                            ]]
+		                                    )
+		                               }
 
-                                 // Subir el artefact al Nexus
-                                            nexusArtifactUploader(
-                                            nexusVersion: 'nexus3',
-                                            protocol: 'https',
-                                            nexusUrl: "${NEXUS_URL}",
-                                            groupId: "${pom.groupId}",
-                                            version: "${version}",
-                                            repository: "${NEXUS_REPOSITORY}",
-                                            credentialsId: "${NEXUS_CREDENTIALS_ID}",
-                                            artifacts: [[
-                                            artifactId: "${artifactId}",
-                                            classifier: '',
-                                            file: artifactPath,
-                                            type: "${packaging}"
-                                            ]]
-                                    )
-                               }
-
-				         }
 					}
 				}
 			}
