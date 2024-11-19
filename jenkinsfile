@@ -157,7 +157,7 @@ pipeline {
 		                       // Subir el artefact al Nexus
 		                       nexusArtifactUploader(
 		                       nexusVersion: 'nexus3',
-		                       //protocol: 'https',
+		                       protocol: 'https',
 		                       nexusUrl: "${NEXUS_URL}",
 		                       groupId: "${POM_GROUP_ID}",
 		                       version: "${POM_VERSION}",
