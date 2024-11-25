@@ -142,6 +142,7 @@ pipeline {
                                                    waitForQualityGate abortPipeline: true
                                                }
                          }
+			}
 
 
                     stage('Create and push Docker Image/Registry') {
