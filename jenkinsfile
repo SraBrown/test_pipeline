@@ -136,7 +136,8 @@ pipeline {
                         }
                         
                         
-                        stage('Quality Gate') {
+                       stage('Quality Gate') {
+                         withSonarQubeEnv(${SONARQUBE_SERVER}) {
                                    steps {
                                                    waitForQualityGate abortPipeline: true
                                                }
