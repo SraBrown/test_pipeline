@@ -135,19 +135,12 @@ pipeline {
                             }
                         }
                         
+                        
                         stage('Quality Gate') {
-                                    steps {
-                                        echo 'Verificando Quality Gate...'
-                                        script {
-                                            def qg = waitForQualityGate()
-                                            if (qg.status != 'OK') {
-                                                error "Quality Gate falló: ${qg.status}"
-                                            } else {
-                                                echo 'Quality Gate aprobado.'
-                                            }
-                                        }
+                                   steps {
+                                                   waitForQualityGate abortPipeline: true
+                                               }
                          }
-		}
 
 
                     stage('Create and push Docker Image/Registry') {
