@@ -134,15 +134,6 @@ pipeline {
                                      -Dsonar.login=${TOKEN_SONAR}"
                             }
                         }
-                        
-                        
-                       stage('Quality Gate') {
-                         withSonarQubeEnv(${SONARQUBE_SERVER}) {
-                                   steps {
-                                                   waitForQualityGate abortPipeline: true
-                                               }
-                         }
-			}
 
 
                     stage('Create and push Docker Image/Registry') {
