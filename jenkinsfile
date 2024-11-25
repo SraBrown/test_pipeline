@@ -4,6 +4,7 @@ pipeline {
            maven "${MAVEN_TOOL}"
         }
         parameters {
+
             choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
             string(name: 'MAVEN_TOOL', defaultValue: 'Maven 3.0.1', description: 'Maven Tool configurado en Jenkins')
             string(name: 'URL_GIT', defaultValue: 'git@gitlab.opentrends.net:a4012/code/encuestas-backend.git', description: 'Git')
