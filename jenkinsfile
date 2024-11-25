@@ -4,9 +4,6 @@ pipeline {
            maven "${MAVEN_TOOL}"
         }
         parameters {
-
-
-
             choice(name: 'ENVIRONMENT', choices: ['dev', 'test', 'prod'], description: 'Environment to deploy')
             string(name: 'MAVEN_TOOL', defaultValue: 'Maven 3.0.1', description: 'Maven Tool configurado en Jenkins')
             string(name: 'URL_GIT', defaultValue: 'git@gitlab.opentrends.net:a4012/code/encuestas-backend.git', description: 'Git')
@@ -49,7 +46,6 @@ pipeline {
             NEXUS_REPOSITORY = "${params.NEXUS_REPOSITORY}"
         }
             stages {
-
                 stage('Checkout') {
                     steps {
                         echo 'Checkout the JAR!'
@@ -59,123 +55,134 @@ pipeline {
 
                     }
                 }
-
-
-               stage('Prepare Environment Variable') {
-                    steps {
-                        script {
-                            // Extra information del artefact using Maven
-                            def pom = readMavenPom file: 'pom.xml'
-                            NAME_ARTEFACT = pom.artifactId
-                            echo "Artifact Name: ${NAME_ARTEFACT}"
-                            def artifactId = NAME_ARTEFACT
-                            POM_VERSION = pom.version
-                            POM_PACKAGING = pom.packaging
-                            POM_GROUP_ID = pom.groupId
-                            def artifactPath = "target/${NAME_ARTEFACT}-${POM_VERSION}.${POM_PACKAGING}"
-                            ARTIFACT_PATH = artifactPath
-                            echo ARTIFACT_PATH
-			            }
-                    }
-                }
-
-               stage('Build and Install') {
-
-                        steps {
-                           script {
-                              echo 'Starting Build ,XMM'
-                              sh 'mvn clean package -DskipTests'
-                            }
-                        }
-                    }
-
-            stage('Prepare Jacoco') {
-                when {
-                                expression { params.EXECUTE_JACOCO == 'Yes' }
-                            }
+                stage('Prepare Environment Variable') {
                         steps {
                             script {
-                            echo 'Iniciar descarga de jacoco'
-                                // Ruta donde se almacenarán los JARs
-                                def jacocoPath = "${env.WORKSPACE}/jacoco"
-                                // Crea el directorio si no existe
-                                sh "mkdir -p ${jacocoPath}"
-                                // Descarga jacocoagent.jar y jacococli.jar
-                                sh """
-                                    curl -L -o ${jacocoPath}/jacocoagent.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/0.8.8/org.jacoco.agent-0.8.8-runtime.jar
-                                    curl -L -o ${jacocoPath}/jacococli.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/0.8.8/org.jacoco.cli-0.8.8-nodeps.jar
-                                """
-
-                                // Verifica que los archivos se hayan descargado
-                                sh "ls -l ${jacocoPath}"
-                                sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
-                                //sh 'mvn ${jacocoPath}:report'
-
-                                //sh  ' -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml '
-
+                                // Extra information del artefact using Maven
+                                def pom = readMavenPom file: 'pom.xml'
+                                NAME_ARTEFACT = pom.artifactId
+                                echo "Artifact Name: ${NAME_ARTEFACT}"
+                                def artifactId = NAME_ARTEFACT
+                                POM_VERSION = pom.version
+                                POM_PACKAGING = pom.packaging
+                                POM_GROUP_ID = pom.groupId
+                                def artifactPath = "target/${NAME_ARTEFACT}-${POM_VERSION}.${POM_PACKAGING}"
+                                ARTIFACT_PATH = artifactPath
+                                echo ARTIFACT_PATH
                             }
                         }
                     }
 
-            /*
-            stage('Dependency Analysis') {
-                steps {
-                    // Run the OWASP Dependency-Check plugin
-                    sh 'mvn org.owasp:dependency-check-maven:check'
-                }
-            }
-            */
+                   stage('Build and Install') {
 
-            stage('SonarQube Analysis') {
-                when {
-                          expression { params.EXECUTE_SONAR == 'Yes' }
+                            steps {
+                               script {
+                                  echo 'Starting Build ,XMM'
+                                  sh 'mvn clean package -DskipTests'
+                                }
+                            }
+                   }
+
+                    stage('Prepare Jacoco') {
+                        when {
+                                        expression { params.EXECUTE_JACOCO == 'Yes' }
+                                    }
+                                steps {
+                                    script {
+                                    echo 'Iniciar descarga de jacoco'
+                                        // Ruta donde se almacenarán los JARs
+                                        def jacocoPath = "${env.WORKSPACE}/jacoco"
+                                        // Crea el directorio si no existe
+                                        sh "mkdir -p ${jacocoPath}"
+                                        // Descarga jacocoagent.jar y jacococli.jar
+                                        sh """
+                                            curl -L -o ${jacocoPath}/jacocoagent.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/0.8.8/org.jacoco.agent-0.8.8-runtime.jar
+                                            curl -L -o ${jacocoPath}/jacococli.jar https://repo1.maven.org/maven2/org/jacoco/org.jacoco.cli/0.8.8/org.jacoco.cli-0.8.8-nodeps.jar
+                                        """
+
+                                        // Verifica que los archivos se hayan descargado
+                                        sh "ls -l ${jacocoPath}"
+                                        sh 'mvn clean verify -Djacoco.agent.version=0.8.8 -Djacoco.include.from=target/classes -Djacoco.output=target/jacoco'
+                                        //sh 'mvn ${jacocoPath}:report'
+
+                                        //sh  ' -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml '
+
+                                    }
+                                }
+                            }
+
+                    /*
+                    stage('Dependency Analysis') {
+                        steps {
+                            // Run the OWASP Dependency-Check plugin
+                            sh 'mvn org.owasp:dependency-check-maven:check'
                         }
-              steps {
-                    sh "mvn clean verify sonar:sonar \
-                             -Dsonar.projectKey=${NAME_ARTEFACT}${SONAR_PROJECT_VERSION} \
-                             -Dsonar.projectName=${NAME_ARTEFACT}${SONAR_PROJECT_VERSION} \
-                             -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} \
-                             -Dsonar.host.url=${SONAR_HOST} \
-                             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-                             -Dsonar.login=${TOKEN_SONAR}"
                     }
-                }
+                    */
+
+                    stage('SonarQube Analysis') {
+                        when {
+                                  expression { params.EXECUTE_SONAR == 'Yes' }
+                                }
+                      steps {
+                            sh "mvn clean verify sonar:sonar \
+                                     -Dsonar.projectKey=${NAME_ARTEFACT}${SONAR_PROJECT_VERSION} \
+                                     -Dsonar.projectName=${NAME_ARTEFACT}${SONAR_PROJECT_VERSION} \
+                                     -Dsonar.projectVersion=${SONAR_PROJECT_VERSION} \
+                                     -Dsonar.host.url=${SONAR_HOST} \
+                                     -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+                                     -Dsonar.login=${TOKEN_SONAR}"
+                            }
+                        }
+                        
+                        stage('Quality Gate') {
+                                    steps {
+                                        echo 'Verificando Quality Gate...'
+                                        script {
+                                            def qg = waitForQualityGate()
+                                            if (qg.status != 'OK') {
+                                                error "Quality Gate falló: ${qg.status}"
+                                            } else {
+                                                echo 'Quality Gate aprobado.'
+                                            }
+                                        }
+                         }
 
 
-            stage('Create and push Docker Image/Registry') {
-                steps {
-                  script{
-                    if (params.GENERATE_MICROSERVICE == 'Yes'){
-                                sh "mvn spring-boot:build-image"
-                                echo "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
-                                // Loguearse en el registro de Docker (si es necesario)
-                                // sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
-                                // Crea el tag
-                                sh "docker tag scc:1.0.0 ${DOCKER_IMAGE_NAME}"
-                                // Subir la imagen al registro Docker
-                                sh "docker login ${DOCKER_LOGIN}"
-                                sh "docker push ${DOCKER_IMAGE_NAME}"
-                             }
-				else {
-		                       // Subir el artefact al Nexus
-		                       nexusArtifactUploader(
-		                       nexusVersion: 'nexus3',
-		                       protocol: 'https',
-		                       nexusUrl: "${NEXUS_URL}",
-		                       groupId: "${POM_GROUP_ID}",
-		                       version: "${POM_VERSION}",
-		                       repository: "${NEXUS_REPOSITORY}",
-		                       credentialsId: "${NEXUS_CREDENTIALS_ID}",
-		                       artifacts: [[
-                                   artifactId: "${NAME_ARTEFACT}",
-                                   classifier: '',
-                                   file: "${ARTIFACT_PATH}",
-                                   type: "${POM_PACKAGING}"
-                                   ]]
-                                   )
-					}
-				}
-			}
+                    stage('Create and push Docker Image/Registry') {
+                        steps {
+                          script{
+                            if (params.GENERATE_MICROSERVICE == 'Yes'){
+                                        sh "mvn spring-boot:build-image"
+                                        echo "docker version" // DOCKER_CERT_PATH is automatically picked up by the Docker client
+                                        // Loguearse en el registro de Docker (si es necesario)
+                                        // sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY'
+                                        // Crea el tag
+                                        sh "docker tag scc:1.0.0 ${DOCKER_IMAGE_NAME}"
+                                        // Subir la imagen al registro Docker
+                                        sh "docker login ${DOCKER_LOGIN}"
+                                        sh "docker push ${DOCKER_IMAGE_NAME}"
+                                     }
+                                else {
+                                               // Subir el artefact al Nexus
+                                               nexusArtifactUploader(
+                                               nexusVersion: 'nexus3',
+                                               protocol: 'https',
+                                               nexusUrl: "${NEXUS_URL}",
+                                               groupId: "${POM_GROUP_ID}",
+                                               version: "${POM_VERSION}",
+                                               repository: "${NEXUS_REPOSITORY}",
+                                               credentialsId: "${NEXUS_CREDENTIALS_ID}",
+                                               artifacts: [[
+                                                   artifactId: "${NAME_ARTEFACT}",
+                                                   classifier: '',
+                                                   file: "${ARTIFACT_PATH}",
+                                                   type: "${POM_PACKAGING}"
+                                                   ]]
+                                                   )
+                                    }
+                            }
+                    }
       }
     }
 }
