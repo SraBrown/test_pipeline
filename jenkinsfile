@@ -147,6 +147,7 @@ pipeline {
                                             }
                                         }
                          }
+		}
 
 
                     stage('Create and push Docker Image/Registry') {
